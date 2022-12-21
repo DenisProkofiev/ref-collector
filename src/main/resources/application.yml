@@ -1,0 +1,21 @@
+server:
+  port: 8090
+spring:
+  application:
+    name: tagcollector
+  datasource:
+    url: jdbc:postgresql://localhost:5432
+    username: den
+    password: den
+    driver-class-name: org.postgresql.Driver
+  liquibase:
+    enabled: true
+    url: ${spring.datasource.url}
+    user: ${spring.datasource.user}
+    password: ${spring.datasource.password}
+    driver-class-name: org.postgresql.Driver
+    change-log: db/changelog/db.changelog-master.xml
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: true
