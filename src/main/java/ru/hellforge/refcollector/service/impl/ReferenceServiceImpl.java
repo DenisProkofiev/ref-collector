@@ -19,12 +19,11 @@ import ru.hellforge.refcollector.service.ReferenceService;
 @Service
 @RequiredArgsConstructor
 public class ReferenceServiceImpl implements ReferenceService {
-
   private final ReferenceRepository referenceRepository;
   private final ReferenceMapper referenceMapper;
 
   @Override
-  public List<ReferenceDto> getReference() {
+  public List<ReferenceDto> getAllReference() {
     return referenceMapper.toDtoList(referenceRepository.findAll());
   }
 
