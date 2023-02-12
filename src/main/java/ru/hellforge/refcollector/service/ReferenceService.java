@@ -10,7 +10,7 @@ import ru.hellforge.refcollector.dto.ReferenceDto;
  */
 public interface ReferenceService {
 
-  List<ReferenceDto> getReference();
+  List<ReferenceDto> getAllReference();
 
   ReferenceDto saveReference(ReferenceDto referenceDto);
 }
