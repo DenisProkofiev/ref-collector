@@ -6,25 +6,22 @@
   <link th:rel="stylesheet" th:href="@{/assets/bootstrap-colorpicker/css/bootstrap-colorpicker.css} "/>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
-  <title>Add new reference</title>
+  <title>Add new tag</title>
 </head>
 <body>
-<h3 style="text-align: center">Add reference</h3>
-<form th:action="@{/reference}" th:object="${reference}" method="post">
+<h3 style="text-align: center">Add tag</h3>
+<form th:action="@{/tag}" th:object="${tags}" method="post">
   <fieldset>
     <label for="name">name</label>
     <input type="text" th:field="*{name}" id="name"/>
     <br>
-    <label for="url">url</label>
-    <input type="text" th:field="*{url}" id="url"/>
-    <br>
     <label for="description">description</label>
     <input type="text" th:field="*{description}" id="description"/>
     <br>
-    <label for="description">tags</label>
-    <input type="text" th:field="*{tags}" id="tags"/>
+    <label for="references">references</label>
+    <input type="text" th:field="*{references}" id="references"/>
     <br>
-    <input type="submit" id="submit-button" th:value="Added"  style="background: springgreen">
+    <input type="submit" id="submit-button" th:value="Added" style="background: springgreen">
     <input type="reset" id="reset-button" th:value="Cancel" style="background: red">
   </fieldset>
 </form>
