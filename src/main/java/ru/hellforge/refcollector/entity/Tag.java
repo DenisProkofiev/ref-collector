@@ -17,7 +17,6 @@ import lombok.NoArgsConstructor;
 @Entity
 @NoArgsConstructor
 public class Tag {
-
   @Id
   @Column(name = "id")
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,5 +24,8 @@ public class Tag {
 
   @Column(name = "name")
   private String tagName;
+
+  @Column(name = "description")
+  private String description;
 
 }

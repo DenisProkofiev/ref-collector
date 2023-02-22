@@ -6,9 +6,10 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 
 /**
  * Reference.
@@ -20,7 +21,6 @@ import lombok.NoArgsConstructor;
 @Table(name = "references")
 @NoArgsConstructor
 public class Reference {
-
   @Id
   @Column(name = "id")
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -36,6 +36,9 @@ public class Reference {
   private String description;
 
   @Column(name = "create_date")
-  private LocalDateTime createDate;
+  @DateTimeFormat(pattern = "dd-MM-yyyy")
+  private LocalDate createDate;
 
+  @Column(name = "tag")
+  private String tags;
 }
