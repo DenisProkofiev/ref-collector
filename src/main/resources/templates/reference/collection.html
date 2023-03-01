@@ -9,12 +9,17 @@
   <title>Reference collection</title>
 </head>
 <body>
-<h1 style="text-align: center">All reference</h1>
-<a style="background: #86e0b3" href="/reference/new" class="btn btn-large btn-success">+</a>
-<a style="background: #6babc7" href="/tag/new" class="btn btn-large btn-success">+</a>
-<a style="background: limegreen" href="reference/filter" class="btn btn-large btn-success">
-  <img src="static/filter.png" width="16"/>
-</a>
+
+<h1 style="text-align: center">Reference Collector</h1>
+
+<div>
+  <a style="background: #86e0b3; height: 40px; width: 40px" href="/reference/new" class="btn btn-large btn-success">+</a>
+  <a style="background: #6babc7; height: 40px; width: 40px" href="/tag/new" class="btn btn-large btn-success">+</a>
+  <a style="background: limegreen; height: 40px; width: 40px" href="reference/filter" class="btn btn-large btn-success">
+    <img src="static/filter.png" width="16"/>
+  </a>
+</div>
+
 <table class="table table-bordered table-striped">
   <thead class="thead-dark">
   <tr>
@@ -23,11 +28,12 @@
     <th style="text-align: center">description</th>
     <th style="text-align: center">tags</th>
     <th style="text-align: center">create date</th>
+    <th style="text-align: center" >actions</th>
   </tr>
   </thead>
   <tbody>
   <tr th:if="${references.empty}">
-    <td colspan="5">No reference available</td>
+    <td colspan="6">No reference available</td>
   </tr>
   <tr th:each="reference : ${references}">
     <td style="text-align: center"><span th:text="${reference.name}"></span></td>
@@ -35,8 +41,15 @@
     <td style="text-align: center"><span th:text="${reference.description}"></span></td>
     <td style="text-align: center"><span th:text="${reference.tags}"></span></td>
     <td style="text-align: center"><span th:text="${reference.createDate}"></span></td>
+    <td>
+      <a th:href="@{/reference/delete/{id}(id=${reference.id})}"
+         class="btn btn-info" role="button" style="background: dodgerblue">update</a>
+      <a th:href="@{/reference/delete/{id}(id=${reference.id})}"
+          class="btn btn-info" role="button" style="background: crimson">-</a>
+    </td>
   </tr>
   </tbody>
 </table>
+
 </body>
 </html>
