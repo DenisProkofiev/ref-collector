@@ -52,6 +52,11 @@ public class ReferenceServiceImpl implements ReferenceService {
     return referenceMapper.toDto(savedReference);
   }
 
+  @Override
+  public void deleteById(Long id) {
+    referenceRepository.deleteById(id);
+  }
+
   private List<String> getAllTags(String tags) {
     return List.of(tags.trim().split(" "));
   }

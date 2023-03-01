@@ -16,4 +16,6 @@ public interface ReferenceService {
   List<ReferenceDto> getReferenceByTag(String tag);
 
   ReferenceDto saveReference(ReferenceDto referenceDto);
+
+  void deleteById(Long id);
 }
