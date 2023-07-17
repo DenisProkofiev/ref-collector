@@ -1,7 +1,9 @@
 package ru.hellforge.refcollector.service;
 
-import java.util.List;
 import ru.hellforge.refcollector.dto.TagDto;
+import ru.hellforge.refcollector.dto.TagFilter;
+
+import java.util.List;
 
 /**
  * TagService.
@@ -10,7 +12,13 @@ import ru.hellforge.refcollector.dto.TagDto;
  */
 public interface TagService {
 
-  List<TagDto> getAllTag();
+    List<TagDto> getAllTag(TagFilter filter);
 
-  TagDto saveTag(TagDto tagDto);
+    TagDto saveTag(TagDto tagDto);
+
+    TagDto getById(Long tagId);
+
+    List<TagDto> getTagDtoListByIdList(List<Long> tagIdList);
+
+    void deleteById(Long id);
 }

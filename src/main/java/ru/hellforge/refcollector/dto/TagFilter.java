@@ -6,7 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * ReferenceFilter.
+ * TagFilter.
  *
  * @author dprokofev
  */
@@ -14,6 +14,6 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ReferenceFilter {
-  private String tags;
+public class TagFilter {
+    private String name;
 }
