@@ -5,7 +5,8 @@ import static org.mapstruct.MappingConstants.ComponentModel.SPRING;
 import java.util.List;
 import org.mapstruct.Mapper;
 import ru.hellforge.refcollector.dto.ReferenceDto;
-import ru.hellforge.refcollector.entity.Reference;
+import ru.hellforge.refcollector.dto.ReferenceResponseDto;
+import ru.hellforge.refcollector.model.entity.Reference;
 
 /**
  * ReferenceMapper.
