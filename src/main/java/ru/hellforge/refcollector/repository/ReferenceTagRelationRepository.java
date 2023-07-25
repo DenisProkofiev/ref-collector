@@ -3,7 +3,7 @@ package ru.hellforge.refcollector.repository;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import ru.hellforge.refcollector.model.entity.ReferenceTagRelation;
+import ru.hellforge.refcollector.model.entity.relation.ReferenceTagRelation;
 
 /**
  * ReferenceTagRelationRepository.

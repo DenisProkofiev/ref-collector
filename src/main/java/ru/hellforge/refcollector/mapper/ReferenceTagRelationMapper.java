@@ -5,7 +5,7 @@ import static org.mapstruct.MappingConstants.ComponentModel.SPRING;
 import java.util.List;
 import org.mapstruct.Mapper;
 import ru.hellforge.refcollector.dto.ReferenceTagRelationDto;
-import ru.hellforge.refcollector.model.entity.ReferenceTagRelation;
+import ru.hellforge.refcollector.model.entity.relation.ReferenceTagRelation;
 
 /**
  * ReferenceTagRelationMapper.

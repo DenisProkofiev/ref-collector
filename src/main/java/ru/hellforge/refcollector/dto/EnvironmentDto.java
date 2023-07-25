@@ -1,21 +1,19 @@
 package ru.hellforge.refcollector.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-/**
- * ReferenceTagRelationDto.
- *
- * @author dprokofev
- */
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ReferenceTagRelationDto {
+public class EnvironmentDto {
+    @JsonProperty("id")
     private Long id;
-    private Long referenceId;
-    private Long tagId;
+    @JsonProperty("name")
+    private String name;
+
 }

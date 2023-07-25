@@ -5,17 +5,12 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-/**
- * ReferenceTagRelationDto.
- *
- * @author dprokofev
- */
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ReferenceTagRelationDto {
+public class EnvironmentReferenceRelationDto {
     private Long id;
+    private Long environmentId;
     private Long referenceId;
-    private Long tagId;
 }

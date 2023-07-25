@@ -4,10 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.hellforge.refcollector.dto.*;
 import ru.hellforge.refcollector.mapper.ReferenceResponseMapper;
-import ru.hellforge.refcollector.service.AccumulatesResponseService;
-import ru.hellforge.refcollector.service.ReferenceService;
-import ru.hellforge.refcollector.service.ReferenceTagRelationService;
-import ru.hellforge.refcollector.service.TagService;
+import ru.hellforge.refcollector.service.*;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -25,27 +22,34 @@ import static org.springframework.util.CollectionUtils.isEmpty;
 @Service
 @RequiredArgsConstructor
 public class AccumulatesResponseServiceImpl implements AccumulatesResponseService {
-
+    private final EnvironmentService environmentService;
     private final ReferenceService referenceService;
     private final TagService tagService;
     private final ReferenceTagRelationService referenceTagRelationService;
     private final ReferenceResponseMapper referenceResponseMapper;
+    private final EnvironmentReferenceRelationService environmentReferenceRelationService;
 
     @Override
     public List<ReferenceResponseDto> getReferenceResponse(ReferenceFilterDto filter) {
+        List<Long> environments = environmentService.getAllEnvironmentId(filter);
 
+        List<Long>  referenceIdList = environmentReferenceRelationService.getReferenceIdListByEnvironmentId(environments);
 
-        List<ReferenceDto> references = referenceService.getAllReference(filter);
+        List<ReferenceDto> allReferences = referenceService.getAllReference(filter);
+
+        List<ReferenceDto> references = !isEmpty(referenceIdList) ? allReferences.stream()
+                .filter(reference -> referenceIdList.contains(reference.getId()))
+                .collect(Collectors.toList()) : allReferences;
 
         List<ReferenceTagRelationDto> relations = referenceTagRelationService.getReferenceTagRelationByReferenceIdList(
                 references.stream()
                         .map(ReferenceDto::getId)
-                        .toList());
+                        .collect(Collectors.toList()));
 
         List<TagDto> tags = tagService.getTagDtoListByIdList(
                 relations.stream()
                         .map(ReferenceTagRelationDto::getTagId)
-                        .toList());
+                        .collect(Collectors.toList()));
 
         Map<Long, List<Long>> map = relations.stream()
                 .collect(groupingBy(ReferenceTagRelationDto::getReferenceId,
@@ -55,7 +59,7 @@ public class AccumulatesResponseServiceImpl implements AccumulatesResponseServic
 
         for (Map.Entry<Long, List<Long>> entry : map.entrySet()) {
             tagMap.put(entry.getKey(), tags.stream()
-                    .filter(tag -> entry.getValue().contains(tag.getId())).toList());
+                    .filter(tag -> entry.getValue().contains(tag.getId())).collect(Collectors.toList()));
         }
 
         List<ReferenceResponseDto> referenceResponseList = new ArrayList<>();

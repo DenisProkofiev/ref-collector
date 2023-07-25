@@ -17,7 +17,7 @@ import ru.hellforge.refcollector.dto.TagDto;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ReferenceFilter {
-
+  private List<Long> tagsIdList;
   private List<TagDto> tags;
 
 }
