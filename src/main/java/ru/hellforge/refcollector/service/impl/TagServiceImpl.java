@@ -1,16 +1,15 @@
 package ru.hellforge.refcollector.service.impl;
 
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.hellforge.refcollector.dto.TagDto;
 import ru.hellforge.refcollector.dto.TagFilter;
-import ru.hellforge.refcollector.mapper.ReferenceMapper;
 import ru.hellforge.refcollector.mapper.TagMapper;
 import ru.hellforge.refcollector.model.entity.Tag;
 import ru.hellforge.refcollector.repository.TagRepository;
 import ru.hellforge.refcollector.service.TagService;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
 
 /**

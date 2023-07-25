@@ -4,9 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.hellforge.refcollector.dto.ReferenceDto;
 import ru.hellforge.refcollector.dto.ReferenceTagRelationDto;
-import ru.hellforge.refcollector.dto.TagDto;
 import ru.hellforge.refcollector.mapper.ReferenceTagRelationMapper;
-import ru.hellforge.refcollector.model.entity.ReferenceTagRelation;
+import ru.hellforge.refcollector.model.entity.relation.ReferenceTagRelation;
 import ru.hellforge.refcollector.repository.ReferenceTagRelationRepository;
 import ru.hellforge.refcollector.service.ReferenceTagRelationService;
 

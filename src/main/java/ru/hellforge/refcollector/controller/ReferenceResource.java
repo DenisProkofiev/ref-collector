@@ -27,7 +27,7 @@ public class ReferenceResource {
 
     @GetMapping("/{referenceId}")
     public ResponseEntity<ReferenceDto> getReferenceById(@PathVariable(required = true) Long referenceId) {
-        return ResponseEntity.status(OK).body(referenceService.getReferenceById(referenceId));
+        return  ResponseEntity.status(OK).body(referenceService.getReferenceById(referenceId));
     }
 
     @PostMapping

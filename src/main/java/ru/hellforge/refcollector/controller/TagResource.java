@@ -8,10 +8,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import ru.hellforge.refcollector.dto.TagDto;
 import ru.hellforge.refcollector.service.TagService;
+
+import static org.springframework.http.HttpStatus.CREATED;
+import static org.springframework.http.HttpStatus.OK;
 
 /**
  * TagResource.
@@ -29,14 +31,14 @@ public class TagResource {
   public ResponseEntity<TagDto> getById(@PathVariable Long tagId) {
     TagDto tag = tagService.getById(tagId);
 
-    return ResponseEntity.status(HttpStatus.OK).body(tag);
+    return ResponseEntity.status(OK).body(tag);
   }
 
   @PostMapping
   public ResponseEntity<TagDto> create(@RequestBody TagDto tagDto) {
     TagDto savedTagDto = tagService.saveTag(tagDto);
 
-    return ResponseEntity.status(HttpStatus.CREATED).body(savedTagDto);
+    return ResponseEntity.status(CREATED).body(savedTagDto);
   }
 
 }
