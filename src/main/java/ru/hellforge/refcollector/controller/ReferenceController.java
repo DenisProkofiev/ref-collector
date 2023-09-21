@@ -40,7 +40,7 @@ public class ReferenceController {
     model.addAttribute("tags", tags);
    // model.addAttribute("relations", relations);
 
-    return "reference/collection";
+    return "Index";
   }
 
 }

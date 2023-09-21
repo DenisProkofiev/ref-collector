@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css"/>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <title>Tag collection</title>
+</head>
+
+<body>
+
+<h1 style="background-image: url('reference-background.png'); margin-top: 0px; margin-bottom: 0px">
+
+    <p style="text-align: right; color:white; font-size: 15px; margin-right: 7px; margin-top: 7px">refcollector 0.7</p>
+
+    <div class="btn-group" style="height: 40px; width: 40px; margin-left: 7px; margin-bottom: 7px">
+        <button id="create-tag" style="background: #86e0b3"
+                type="button"
+                class="btn btn-success"
+                data-toggle="modal"
+                data-target="#tagCreateDialog">
+            <i class="fa fa-plus-square"></i>
+        </button>
+        <a style="background: #6babc7"
+           href="../" class="btn btn-success">
+            <i class="material-icons">table_chart</i>
+        </a>
+        <a style="background: limegreen"
+           href="tag/filter"
+           class="btn btn-success">
+            <i class="fa fa-filter"></i>
+        </a>
+    </div>
+
+</h1>
+
+<table class="table table-bordered table-striped">
+    <thead class="thead-dark">
+    <tr>
+        <th style="text-align: center; vertical-align: middle; width: 30px">id</th>
+        <th style="text-align: center">name</th>
+        <th style="text-align: center">description</th>
+        <th style="text-align: center; vertical-align: middle; width: 160px; align-items: center">actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:if="${tags.empty}">
+        <td colspan="4">No tag available</td>
+    </tr>
+    <tr th:each="tag : ${tags}">
+        <td style="text-align: center; vertical-align: middle"><span th:text="${tag.id}"></span></td>
+        <td style="text-align: center; vertical-align: middle"><span th:text="${tag.name}"></span></td>
+        <td style="text-align: center; vertical-align: middle"><span th:text="${tag.description}"></span></td>
+        <td>
+            <button id="copyUrlButton" type="button" class="btn btn-success" style="background: #6babc7">
+                <i class="fa fa-copy"></i>
+            </button>
+            <button id="edit-tag" type="button" class="btn btn-success" data-toggle="modal" data-target="#tagEditDialog"
+                    th:data-tagId="${tag.id}"><i class="fas fa-edit"></i></button>
+            <a th:href="@{/tag/delete/{id}(id=${tag.id})}"
+               class="btn btn-danger" role="button" style="background: crimson"><i class="far fa-trash-alt"></i></a>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<div class="modal fade" id="tagCreateDialog" tabindex="-1" role="dialog" aria-labelledby="tagCreateDialogLabel"
+     aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="tagCreateDialogLabel">Create tag</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <input type="hidden" id="tag-id">
+                    <div class="form-group">
+                        <label for="tag-name" class="col-form-label">Name</label>
+                        <input type="text" class="form-control" id="tag-name">
+                    </div>
+                    <div class="form-group">
+                        <label for="tag-description" class="col-form-label">Description</label>
+                        <input type="text" class="form-control" id="tag-description">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button id="save-tag-button" type="button" class="btn btn-primary">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="tagEditDialog" tabindex="-1" role="dialog" aria-labelledby="tagEditDialogLabel"
+     aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="tagEditDialogLabel">Edit tag</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <input type="hidden" id="tag-id">
+                    <div class="form-group">
+                        <label for="tag-name" class="col-form-label">Name</label>
+                        <input type="text" class="form-control" id="tag-name">
+                    </div>
+                    <div class="form-group">
+                        <label for="tag-description" class="col-form-label">Description</label>
+                        <input type="text" class="form-control" id="tag-description">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button id="update-tag-button" type="button" class="btn btn-primary">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"
+        integrity="sha384-tsQFqpEReu7ZLhBV2VZlAu7zcOV+rXbYlF2cqB8txI/8aZajjp4Bqd+V6D5IgvKT"
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
+
+<!--Распологать после всех скриптов-->
+
+<script>
+    $('#save-tag-button').click(function () {
+        let modal = $('#tagCreateDialog')
+        let tag = {
+            name: modal.find('#tag-name').val(),
+            description: modal.find('#tag-description').val(),
+        };
+        if (modal.find('#tag-id').val()) {
+            tag.id = modal.find('#tag-id').val()
+        }
+        $.ajax({
+            url: '/api/v1/tag',
+            type: 'POST',
+            data: JSON.stringify(tag),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: () => {
+                location.reload()
+            },
+            error: (err) => {
+                alert(err);
+            }
+        })
+
+        modal.modal('hide');
+    });
+</script>
+
+<script>
+    $('#tagEditDialog').on('shown.bs.modal', function (event) {
+        let button = $(event.relatedTarget)
+        let tagId = button.data('tagid')
+        if (tagId) {
+            $.get({
+                url: '/api/v1/reference/' + tagId,
+                success: (data) => {
+                    let modal = $(this)
+                    modal.find('#tag-id').val(data.id)
+                    modal.find('#tag-name').val(data.name)
+                    modal.find('#tag-description').val(data.description)
+                },
+                error: (err) => {
+                    alert(err);
+                }
+            });
+        }
+    })
+
+    $('#update-tag-button').click(function () {
+        let modal = $('#tagEditDialog')
+        let tag = {
+            name: modal.find('#tag-name').val(),
+            description: modal.find('#tag-description').val(),
+        };
+        if (modal.find('#tag-id').val()) {
+            tag.id = modal.find('#tag-id').val()
+        }
+        $.ajax({
+            url: '/api/v1/tag',
+            type: 'POST',
+            data: JSON.stringify(tag),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: () => {
+                location.reload()
+            },
+            error: (err) => {
+                alert(err);
+            }
+        })
+
+        modal.modal('hide');
+    });
+</script>
+
+</body>
+</html>

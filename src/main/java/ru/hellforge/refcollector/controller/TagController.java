@@ -25,13 +25,13 @@ public class TagController {
   @GetMapping
   public String getAllTag(@RequestParam(required = false) String filter, Model model) {
     model.addAttribute("tags", tagService.getAllTag(TagFilter.builder().name(filter).build()));
-    return "tag/index";
+    return "tag/tags";
   }
 
   @GetMapping("/delete/{id}")
   public String deleteReference(@PathVariable(name = "id") Long id) {
     tagService.deleteById(id);
-    return "redirect:/tag";
+    return "redirect:/tag/tags";
   }
 
 }
