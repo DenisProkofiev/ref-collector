@@ -15,11 +15,8 @@ import static org.mapstruct.MappingConstants.ComponentModel.SPRING;
  */
 @Mapper(componentModel = SPRING)
 public interface ReferenceMapper {
-
     ReferenceDto toDto(Reference reference);
-
     Reference toEntity(ReferenceDto referenceDto);
-
     List<ReferenceDto> toDtoList(List<Reference> referenceList);
 
 }

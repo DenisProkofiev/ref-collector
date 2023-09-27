@@ -59,4 +59,12 @@ public class EnvironmentServiceImpl implements EnvironmentService {
         return environmentMapper.toDto(environment);
     }
 
+    @Override
+    public void addReferenceToEnvironment(Long environmentId, Long referenceId) {
+        Environment environment = environmentRepository.findById(environmentId).orElseThrow(EntityNotFoundException::new);
+
+        environment.getReference().add(referenceId);
+    }
+
+
 }

@@ -243,6 +243,15 @@
                             </option>
                         </select>
                     </div>
+                    <div class="form-group">
+                        <label for="environment-name" class="col-form-label">Environments</label>
+                        <select class="form-control selectpicker" th:field="*{environments}" id ="environment">
+                            <option value="null">Global environment</option>
+                            <option th:each="environment : ${environments}"
+                                    th:value="${environment.id}" th:text="${environment.name}">
+                            </option>
+                        </select>
+                    </div>
                 </form>
             </div>
             <div class="modal-footer">

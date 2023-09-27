@@ -10,11 +10,8 @@ import static org.mapstruct.MappingConstants.ComponentModel.SPRING;
 
 @Mapper(componentModel = SPRING)
 public interface EnvironmentMapper {
-
     Environment toEntity(EnvironmentDto environmentDto);
-
     EnvironmentDto toDto(Environment environment);
-
     List<EnvironmentDto> toDtoList(List<Environment> environmentList);
 
 }

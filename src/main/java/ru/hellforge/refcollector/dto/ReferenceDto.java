@@ -31,4 +31,6 @@ public class ReferenceDto {
   private LocalDate createDate;
   @JsonProperty("tags")
   private List<Long> tagIdList;
+  @JsonProperty("environmentId")
+  private Long environmentId;
 }

@@ -1,11 +1,11 @@
 package ru.hellforge.refcollector.model.entity;
 
 
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.List;
 
 /**
  * FavoriteLink.
@@ -24,5 +24,9 @@ public class Environment {
 
     @Column(name = "name")
     private String name;
+
+    @OneToMany
+    @JoinColumn(name = "reference_id")
+    private List<Long> reference;
 
 }

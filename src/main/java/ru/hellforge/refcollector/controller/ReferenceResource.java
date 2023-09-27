@@ -5,12 +5,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.hellforge.refcollector.dto.ReferenceDto;
+import ru.hellforge.refcollector.service.EnvironmentService;
 import ru.hellforge.refcollector.service.ReferenceService;
 import ru.hellforge.refcollector.service.ReferenceTagRelationService;
 
 import static java.util.Objects.nonNull;
 import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.util.CollectionUtils.isEmpty;
+import static ru.hellforge.refcollector.util.BaseOperation.isIdValid;
 
 /**
  * ReferenceResource.
@@ -24,6 +26,7 @@ public class ReferenceResource {
 
     private final ReferenceService referenceService;
     private final ReferenceTagRelationService referenceTagRelationService;
+    private final EnvironmentService environmentService;
 
     @GetMapping("/{referenceId}")
     public ResponseEntity<ReferenceDto> getReferenceById(@PathVariable(required = true) Long referenceId) {
@@ -33,6 +36,10 @@ public class ReferenceResource {
     @PostMapping
     public ResponseEntity<ReferenceDto> addReference(@RequestBody ReferenceDto referenceDto) {
         ReferenceDto savedReference = referenceService.saveReference(referenceDto);
+
+        if(isIdValid(referenceDto.getEnvironmentId())) {
+            environmentService.addReferenceToEnvironment(referenceDto.getId(), referenceDto.getEnvironmentId());
+        }
 
         if (nonNull(savedReference.getId()) && !isEmpty(referenceDto.getTagIdList())) {
             savedReference.setTagIdList(referenceDto.getTagIdList());

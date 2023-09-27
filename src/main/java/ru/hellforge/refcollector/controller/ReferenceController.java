@@ -38,7 +38,6 @@ public class ReferenceController {
     model.addAttribute("environments", environments);
     model.addAttribute("references", references);
     model.addAttribute("tags", tags);
-   // model.addAttribute("relations", relations);
 
     return "Index";
   }
