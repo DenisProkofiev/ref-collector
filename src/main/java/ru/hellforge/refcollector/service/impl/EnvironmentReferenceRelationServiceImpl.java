@@ -7,17 +7,38 @@ import ru.hellforge.refcollector.mapper.EnvironmentReferenceMapper;
 import ru.hellforge.refcollector.model.entity.relation.EnvironmentReferenceRelation;
 import ru.hellforge.refcollector.repository.EnvironmentReferenceRelationRepository;
 import ru.hellforge.refcollector.service.EnvironmentReferenceRelationService;
+import ru.hellforge.refcollector.service.EnvironmentService;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
-import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.toList;
 
 @Service
 @RequiredArgsConstructor
 public class EnvironmentReferenceRelationServiceImpl implements EnvironmentReferenceRelationService {
 
+    private final EnvironmentService environmentService;
     private final EnvironmentReferenceRelationRepository environmentReferenceRelationRepository;
     private final EnvironmentReferenceMapper environmentReferenceMapper;
 
+    @Override
+    public void addReferenceToEnvironment(Long environmentId, Long referenceId) {
+        if (environmentService.isEnvironmentExist(environmentId)) {
+            EnvironmentReferenceRelation relation = new EnvironmentReferenceRelation();
+            relation.setEnvironmentId(environmentId);
+            relation.setReferenceId(referenceId);
+
+            environmentReferenceRelationRepository.save(relation);
+        } else
+            throw new EntityNotFoundException();
+    }
+
+    @Override
+    public EnvironmentReferenceRelation getEnvironmentReferenceRelationByID(Long environmentId) {
+           return environmentReferenceRelationRepository.findById(environmentId).orElseThrow(EntityNotFoundException::new);
+
+    }
     @Override
     public void deleteRelation(Long relationId) {
         environmentReferenceRelationRepository.deleteById(relationId);
@@ -36,14 +57,19 @@ public class EnvironmentReferenceRelationServiceImpl implements EnvironmentRefer
     public List<Long> getReferenceIdListByEnvironmentId(Long environmentId) {
         return environmentReferenceRelationRepository.findAllByEnvironmentId(environmentId).stream()
                 .map(EnvironmentReferenceRelation::getReferenceId)
-                .collect(Collectors.toList());
+                .collect(toList());
     }
 
     @Override
-    public List<Long> getReferenceIdListByEnvironmentId(List<Long> environmentIdList) {
-        return environmentIdList.stream()
-                .flatMap(environmentId -> getReferenceIdListByEnvironmentId(environmentId).stream())
-                .collect(Collectors.toList());
+    public List<Long> getReferenceIdListByEnvironmentIdList(List<Long> environmentIdList) {
+        return environmentReferenceRelationRepository.findAllByEnvironmentIdIn(environmentIdList);
+    }
+
+    @Override
+    public List<EnvironmentReferenceRelationDto> getAllRelations() {
+        return environmentReferenceRelationRepository.findAll().stream()
+                .map(environmentReferenceMapper::toDto)
+                .collect(toList());
     }
 
 }

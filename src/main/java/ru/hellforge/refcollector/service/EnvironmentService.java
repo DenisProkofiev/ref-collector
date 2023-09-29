@@ -17,5 +17,5 @@ public interface EnvironmentService {
 
     EnvironmentDto getEnvironmentById(Long environmentId);
 
-    void addReferenceToEnvironment(Long environmentId, Long referenceId);
+    Boolean isEnvironmentExist(Long environmentId);
 }

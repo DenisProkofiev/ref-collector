@@ -56,13 +56,24 @@
         <td style="text-align: center; vertical-align: middle"><span th:text="${tag.name}"></span></td>
         <td style="text-align: center; vertical-align: middle"><span th:text="${tag.description}"></span></td>
         <td>
-            <button id="copyUrlButton" type="button" class="btn btn-success" style="background: #6babc7">
-                <i class="fa fa-copy"></i>
-            </button>
-            <button id="edit-tag" type="button" class="btn btn-success" data-toggle="modal" data-target="#tagEditDialog"
-                    th:data-tagId="${tag.id}"><i class="fas fa-edit"></i></button>
-            <a th:href="@{/tag/delete/{id}(id=${tag.id})}"
-               class="btn btn-danger" role="button" style="background: crimson"><i class="far fa-trash-alt"></i></a>
+            <div class="btn-group" style="height: 35px; width: 35px">
+                <button id="copyUrlButton"
+                        type="button"
+                        class="btn btn-success"
+                        style="background: #6babc7">
+                    <i class="fa fa-copy"></i>
+                </button>
+                <button id="edit-tag"
+                        type="button"
+                        class="btn btn-success"
+                        data-toggle="modal"
+                        data-target="#tagEditDialog"
+                        th:data-tagId="${tag.id}">
+                    <i class="fas fa-edit"></i>
+                </button>
+                <a th:href="@{/tag/delete/{id}(id=${tag.id})}"
+                   class="btn btn-danger" role="button" style="background: crimson"><i class="far fa-trash-alt"></i></a>
+            </div>
         </td>
     </tr>
     </tbody>
