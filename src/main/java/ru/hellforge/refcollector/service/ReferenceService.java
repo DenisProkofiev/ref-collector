@@ -1,5 +1,6 @@
 package ru.hellforge.refcollector.service;
 
+import java.sql.SQLData;
 import java.util.List;
 import ru.hellforge.refcollector.dto.ReferenceDto;
 import ru.hellforge.refcollector.dto.ReferenceFilterDto;
@@ -19,4 +20,6 @@ public interface ReferenceService {
   void deleteById(Long id);
 
   ReferenceDto getReferenceById(Long referenceId);
+
+    SQLData getAllGlobalReference();
 }

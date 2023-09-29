@@ -2,6 +2,7 @@ package ru.hellforge.refcollector.service.impl;
 
 
 
+import java.sql.SQLData;
 import java.util.List;
 
 import lombok.RequiredArgsConstructor;
@@ -46,6 +47,11 @@ public class ReferenceServiceImpl implements ReferenceService {
     Reference referenceFromBD = referenceRepository.findById(referenceId).orElseThrow(EntityNotFoundException::new);
 
     return referenceMapper.toDto(referenceFromBD);
+  }
+
+  @Override
+  public SQLData getAllGlobalReference() {
+    return referenceRepository.getAllGlobalReferences();
   }
 
   @Override
