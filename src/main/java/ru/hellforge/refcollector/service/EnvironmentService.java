@@ -9,9 +9,7 @@ public interface EnvironmentService {
 
     List<EnvironmentDto> getAllEnvironment();
 
-    List<EnvironmentDto> getAllEnvironment(ReferenceFilterDto filter);
-
-    List<Long> getAllEnvironmentId(ReferenceFilterDto filter);
+    List<Long> getAllEnvironmentId();
 
     EnvironmentDto addEnvironment(EnvironmentDto environmentDto);
 

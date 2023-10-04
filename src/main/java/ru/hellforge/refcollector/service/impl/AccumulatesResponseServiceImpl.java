@@ -29,13 +29,24 @@ public class AccumulatesResponseServiceImpl implements AccumulatesResponseServic
     private final ReferenceResponseMapper referenceResponseMapper;
     private final EnvironmentReferenceRelationService environmentReferenceRelationService;
 
+
+    @Override
+    public List<Long> getReferenceIdListByEnvironmentIdList(List<Long> environmentIdList) {
+        return environmentReferenceRelationService.getReferenceIdListByEnvironmentIdList(environmentIdList);
+    }
+
+    @Override
+    public List<ReferenceDto> getReferenceDtoListByReferenceIdList(List<Long> referenceIdList) {
+        return referenceService.getReferenceById(referenceIdList);
+    }
+
     @Override
     public List<ReferenceResponseDto> getReferenceResponse(ReferenceFilterDto filter) {
         List<Long> referenceEnvironmentsRelation = environmentReferenceRelationService.getAllRelations().stream()
                 .map(EnvironmentReferenceRelationDto::getReferenceId)
                 .collect(toList());
 
-        List<Long> environments = environmentService.getAllEnvironmentId(filter);
+        List<Long> environments = environmentService.getAllEnvironmentId();
 
         List<Long>  referenceIdList = environmentReferenceRelationService.getReferenceIdListByEnvironmentIdList(environments);
 

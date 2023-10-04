@@ -1,10 +1,9 @@
 package ru.hellforge.refcollector.service;
 
-import java.sql.SQLData;
-import java.util.List;
 import ru.hellforge.refcollector.dto.ReferenceDto;
 import ru.hellforge.refcollector.dto.ReferenceFilterDto;
-import ru.hellforge.refcollector.dto.TagDto;
+
+import java.util.List;
 
 /**
  * ReferenceService.
@@ -13,13 +12,13 @@ import ru.hellforge.refcollector.dto.TagDto;
  */
 public interface ReferenceService {
 
-  List<ReferenceDto> getAllReference(ReferenceFilterDto filter);
+    List<ReferenceDto> getAllReference(ReferenceFilterDto filter);
 
-  ReferenceDto saveReference(ReferenceDto referenceDto);
+    ReferenceDto saveReference(ReferenceDto referenceDto);
 
-  void deleteById(Long id);
+    void deleteById(Long id);
 
-  ReferenceDto getReferenceById(Long referenceId);
+    ReferenceDto getReferenceById(Long referenceId);
 
-    SQLData getAllGlobalReference();
+    List<ReferenceDto> getReferenceById(List<Long> referenceIdList);
 }

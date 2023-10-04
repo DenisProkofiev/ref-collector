@@ -50,8 +50,10 @@ public class ReferenceServiceImpl implements ReferenceService {
   }
 
   @Override
-  public SQLData getAllGlobalReference() {
-    return referenceRepository.getAllGlobalReferences();
+  public List<ReferenceDto> getReferenceById(List<Long> referenceIdList) {
+    List<Reference> references = referenceRepository.findAllByIdIn(referenceIdList);
+
+    return referenceMapper.toDtoList(references);
   }
 
   @Override
