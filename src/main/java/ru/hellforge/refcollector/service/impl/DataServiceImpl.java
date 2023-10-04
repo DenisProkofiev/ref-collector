@@ -14,7 +14,6 @@ public class DataServiceImpl implements DataService {
     private final ObjectMapper objectMapper;
 
     public void saveJsonToFile(Object object, String destination) throws IOException {
-        destination = "C:/Users/prokofev.dv.kst/Desktop/ref-collector-dump.txt";
         String json = objectMapper.writeValueAsString(object);
 
         try (FileWriter writer = new FileWriter(destination)) {

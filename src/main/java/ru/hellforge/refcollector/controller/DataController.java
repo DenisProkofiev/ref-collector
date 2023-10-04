@@ -25,13 +25,9 @@ public class DataController {
         return ResponseEntity.status(OK).body(accumulatesResponseService.getReferenceDtoListByReferenceIdList(environmentIdList));
     }
 
-    @GetMapping("default_data")
-    public SQLData getDefaultData() {
-        return null;
-    }
-
     @PostMapping("/dump")
     public void createDump(@RequestBody String destination) throws IOException {
+        destination = "C:/Users/prokofev.dv.kst/Desktop/ref-collector-dump.txt";
         dataService.saveJsonToFile(accumulatesResponseService.getReferenceDtoListByReferenceIdList(List.of(21L, 22L)), destination);
     }
 }
