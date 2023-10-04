@@ -31,14 +31,8 @@ public class EnvironmentServiceImpl implements EnvironmentService {
     }
 
     @Override
-    public List<EnvironmentDto> getAllEnvironment(ReferenceFilterDto filter) {
-        return Objects.isNull(filter) || Objects.isNull(filter.getEnvironmentId()) ? getAllEnvironment()
-                : List.of(getEnvironmentById(filter.getEnvironmentId()));
-    }
-
-    @Override
-    public List<Long> getAllEnvironmentId(ReferenceFilterDto filter) {
-        return getAllEnvironment(filter).stream()
+    public List<Long> getAllEnvironmentId() {
+        return getAllEnvironment().stream()
                 .map(EnvironmentDto::getId)
                 .collect(Collectors.toList());
     }
@@ -60,11 +54,8 @@ public class EnvironmentServiceImpl implements EnvironmentService {
     }
 
     @Override
-    public void addReferenceToEnvironment(Long environmentId, Long referenceId) {
-        Environment environment = environmentRepository.findById(environmentId).orElseThrow(EntityNotFoundException::new);
-
-        environment.getReference().add(referenceId);
+    public Boolean isEnvironmentExist(Long environmentId) {
+        return environmentRepository.existsById(environmentId);
     }
-
 
 }

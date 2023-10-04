@@ -25,8 +25,4 @@ public class Environment {
     @Column(name = "name")
     private String name;
 
-    @OneToMany
-    @JoinColumn(name = "reference_id")
-    private List<Long> reference;
-
 }

@@ -18,4 +18,5 @@ import lombok.NoArgsConstructor;
 public class ReferenceFilterDto {
   private Long environmentId;
   private List<Long> tagsIdList;
+  private Boolean globalReferences;
 }
