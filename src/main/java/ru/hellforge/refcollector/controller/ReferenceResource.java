@@ -4,11 +4,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.hellforge.refcollector.dto.BaseRelationDto;
 import ru.hellforge.refcollector.dto.ReferenceDto;
-import ru.hellforge.refcollector.service.EnvironmentReferenceRelationService;
-import ru.hellforge.refcollector.service.EnvironmentService;
-import ru.hellforge.refcollector.service.ReferenceService;
-import ru.hellforge.refcollector.service.ReferenceTagRelationService;
+import ru.hellforge.refcollector.service.*;
 
 import static java.util.Objects.nonNull;
 import static org.springframework.http.HttpStatus.OK;
@@ -28,6 +26,7 @@ public class ReferenceResource {
     private final ReferenceService referenceService;
     private final ReferenceTagRelationService referenceTagRelationService;
     private final EnvironmentReferenceRelationService environmentReferenceRelationService;
+    private final BaseRelationService baseRelationService;
 
     @GetMapping("/{referenceId}")
     public ResponseEntity<ReferenceDto> getReferenceById(@PathVariable(required = true) Long referenceId) {
@@ -40,6 +39,7 @@ public class ReferenceResource {
 
         if(isIdValid(referenceDto.getEnvironmentId())) {
             environmentReferenceRelationService.addReferenceToEnvironment(referenceDto.getId(), referenceDto.getEnvironmentId());
+            baseRelationService.getListRelationFromReferenceDto(savedReference);
         }
 
         if (nonNull(savedReference.getId()) && !isEmpty(referenceDto.getTagIdList())) {
