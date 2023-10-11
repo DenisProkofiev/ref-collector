@@ -1,6 +1,7 @@
 package ru.hellforge.refcollector.service;
 
 import ru.hellforge.refcollector.dto.EnvironmentDto;
+import ru.hellforge.refcollector.dto.EnvironmentImportDto;
 import ru.hellforge.refcollector.dto.ReferenceFilterDto;
 
 import java.util.List;
@@ -16,4 +17,6 @@ public interface EnvironmentService {
     EnvironmentDto getEnvironmentById(Long environmentId);
 
     Boolean isEnvironmentExist(Long environmentId);
+
+    List<EnvironmentImportDto> getAllImportEnvironment();
 }

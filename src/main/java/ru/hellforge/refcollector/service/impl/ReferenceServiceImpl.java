@@ -25,7 +25,6 @@ import static java.util.Objects.isNull;
 @Service
 @RequiredArgsConstructor
 public class ReferenceServiceImpl implements ReferenceService {
-
     private final ReferenceRepository referenceRepository;
     private final ReferenceMapper referenceMapper;
     private final ReferenceTagRelationService referenceTagRelationService;
@@ -36,40 +35,50 @@ public class ReferenceServiceImpl implements ReferenceService {
                 referenceRepository.findAll() :
                 referenceRepository.findAllById(referenceTagRelationService.getReferenceIdListByTagId(filter.getTagsIdList().get(0)));
 
-        return referenceMapper.toDtoList(referenceDtoList);
+        return referenceMapper.referenceListToFullDtoList(referenceDtoList);
     }
 
     @Override
     public ReferenceDto getReferenceById(Long referenceId) {
         Reference referenceFromBD = referenceRepository.findById(referenceId).orElseThrow(EntityNotFoundException::new);
 
-        return referenceMapper.toDto(referenceFromBD);
+        return referenceMapper.entityToFullDto(referenceFromBD);
     }
 
     @Override
     public List<ReferenceDto> getReferenceById(List<Long> referenceIdList) {
         List<Reference> references = referenceRepository.findAllByIdIn(referenceIdList);
 
-        return referenceMapper.toDtoList(references);
+        return referenceMapper.referenceListToFullDtoList(references);
+    }
+
+    @Override
+    public List<ReferenceImportDto> getAllImportReference() {
+        return referenceMapper.entityListToImportDtoList(referenceRepository.findAll());
     }
 
     @Override
     @Transactional
     public ReferenceDto saveReference(ReferenceDto referenceDto) {
-        Reference reference = referenceMapper.toEntity(referenceDto);
+        Reference reference = referenceMapper.fullDtoToEntity(referenceDto);
 
         referenceTagRelationService.addRelationFromReference(referenceDto);
 
         Reference savedReference = referenceRepository.save(reference);
 
-        return referenceMapper.toDto(savedReference);
+        return referenceMapper.entityToFullDto(savedReference);
     }
 
     @Override
     public List<ReferenceDto> saveReferenceList(List<ReferenceDto> referenceDtoList) {
-        List<Reference> references = referenceMapper.toEntityList(referenceDtoList);
+        List<Reference> references = referenceMapper.fullDtoListToEntityList(referenceDtoList);
 
-        return referenceMapper.toDtoList(referenceRepository.saveAll(references));
+        return referenceMapper.referenceListToFullDtoList(referenceRepository.saveAll(references));
+    }
+
+    @Override
+    public void importReferenceList(List<ReferenceImportDto> referenceDtoList) {
+        List<Reference> savedReferences = referenceRepository.saveAll(referenceMapper.importDtoListToEntityList(referenceDtoList));
     }
 
     @Override

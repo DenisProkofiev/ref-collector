@@ -5,6 +5,7 @@ import static org.mapstruct.MappingConstants.ComponentModel.SPRING;
 import java.util.List;
 import org.mapstruct.Mapper;
 import ru.hellforge.refcollector.dto.TagDto;
+import ru.hellforge.refcollector.dto.TagImportDto;
 import ru.hellforge.refcollector.model.entity.Tag;
 
 /**
@@ -23,4 +24,5 @@ public interface TagMapper {
 
     List<Tag> toEntityList(List<TagDto> tagDtoList);
 
+    List<TagImportDto> entityListToImportDtoList(List<Tag> tagList);
 }
