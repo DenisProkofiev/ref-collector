@@ -27,7 +27,7 @@ public class DataController {
 
     @PostMapping("/export")
     public void exportDump(@RequestBody ExportProperties properties) throws IOException {
-        dataService.saveJsonToFile(accumulatesResponseService.getReferenceDtoListByReferenceIdList(List.of(21L, 22L)),properties);
+        dataService.saveJsonToFile(properties);
     }
 
     @GetMapping("/import")

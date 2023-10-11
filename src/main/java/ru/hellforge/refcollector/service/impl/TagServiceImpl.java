@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.hellforge.refcollector.dto.TagDto;
 import ru.hellforge.refcollector.dto.TagFilter;
+import ru.hellforge.refcollector.dto.TagImportDto;
 import ru.hellforge.refcollector.mapper.TagMapper;
 import ru.hellforge.refcollector.model.entity.Tag;
 import ru.hellforge.refcollector.repository.TagRepository;
@@ -61,6 +62,11 @@ public class TagServiceImpl implements TagService {
     @Override
     public void deleteById(Long id) {
         tagRepository.deleteById(id);
+    }
+
+    @Override
+    public List<TagImportDto> getAllImportTag() {
+        return tagMapper.entityListToImportDtoList(tagRepository.findAll());
     }
 
 }

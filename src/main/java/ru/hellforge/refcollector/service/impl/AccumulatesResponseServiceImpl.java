@@ -29,7 +29,7 @@ public class AccumulatesResponseServiceImpl implements AccumulatesResponseServic
     private final ReferenceTagRelationService referenceTagRelationService;
     private final ReferenceResponseMapper referenceResponseMapper;
     private final EnvironmentReferenceRelationService environmentReferenceRelationService;
-
+    private final BaseRelationService baseRelationService;
 
     @Override
     public List<Long> getReferenceIdListByEnvironmentIdList(List<Long> environmentIdList) {
@@ -92,6 +92,20 @@ public class AccumulatesResponseServiceImpl implements AccumulatesResponseServic
         return referenceResponseList;
     }
 
+    @Override
+    public JsonDataDto getExportDataDto() {
+        List<ReferenceImportDto> referenceImportDtos = referenceService.getAllImportReference();
+        List<TagImportDto> tagImportList = tagService.getAllImportTag();
+        List<EnvironmentImportDto> environmentImportDtos = environmentService.getAllImportEnvironment();
+        List<BaseRelationImportDto> baseRelationImportDtos = baseRelationService.getAllImportBaseRelation();
+
+        return JsonDataDto.builder()
+                .references(referenceImportDtos)
+                .tags(tagImportList)
+                .environments(environmentImportDtos)
+                .baseRelations(baseRelationImportDtos)
+                .build();
+    }
 
 
     private boolean getFilterPredicate(ReferenceFilterDto filter, Long id) {

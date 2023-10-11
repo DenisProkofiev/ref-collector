@@ -14,4 +14,5 @@ public class ExportProperties {
     private Boolean reference;
     private Boolean target;
     private Boolean environment;
+    private Boolean relation;
 }

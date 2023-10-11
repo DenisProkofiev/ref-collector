@@ -3,6 +3,7 @@ package ru.hellforge.refcollector.service.impl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.hellforge.refcollector.dto.BaseRelationDto;
+import ru.hellforge.refcollector.dto.BaseRelationImportDto;
 import ru.hellforge.refcollector.dto.ReferenceDto;
 import ru.hellforge.refcollector.enums.RelationType;
 import ru.hellforge.refcollector.mapper.BaseReferenceMapper;
@@ -35,6 +36,11 @@ public class BaseRelationServiceImpl implements BaseRelationService {
         List<BaseRelation> newRelations = getListBaseRelationsFromReference(referenceDto);
 
         return baseReferenceMapper.toDtoList(baseRelationRepository.saveAll(newRelations));
+    }
+
+    @Override
+    public List<BaseRelationImportDto> getAllImportBaseRelation() {
+        return baseReferenceMapper.entityListToImportDtoList(baseRelationRepository.findAll());
     }
 
     private List<BaseRelation> getListBaseRelationsFromReference(ReferenceDto referenceDto) {

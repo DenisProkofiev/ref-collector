@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.stereotype.Service;
 import ru.hellforge.refcollector.dto.EnvironmentDto;
+import ru.hellforge.refcollector.dto.EnvironmentImportDto;
 import ru.hellforge.refcollector.dto.ReferenceFilterDto;
 import ru.hellforge.refcollector.mapper.EnvironmentMapper;
 import ru.hellforge.refcollector.model.entity.Environment;
@@ -56,6 +57,11 @@ public class EnvironmentServiceImpl implements EnvironmentService {
     @Override
     public Boolean isEnvironmentExist(Long environmentId) {
         return environmentRepository.existsById(environmentId);
+    }
+
+    @Override
+    public List<EnvironmentImportDto> getAllImportEnvironment() {
+        return environmentMapper.entityListToImportDtoList(environmentRepository.findAll());
     }
 
 }

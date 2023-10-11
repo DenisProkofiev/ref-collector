@@ -7,6 +7,7 @@ import ru.hellforge.refcollector.dto.JsonDataDto;
 import ru.hellforge.refcollector.dto.ReferenceDto;
 import ru.hellforge.refcollector.dto.ReferenceImportDto;
 import ru.hellforge.refcollector.model.ExportProperties;
+import ru.hellforge.refcollector.service.AccumulatesResponseService;
 import ru.hellforge.refcollector.service.DataService;
 import ru.hellforge.refcollector.service.ReferenceService;
 import ru.hellforge.refcollector.service.TagService;
@@ -26,11 +27,12 @@ public class DataServiceImpl implements DataService {
     private final ObjectMapper objectMapper;
     private final ReferenceService referenceService;
     private final TagService tagService;
-    private final EnvironmentServiceImpl environmentService;
+    private final AccumulatesResponseService accumulatesResponseService;
 
 
-    public void saveJsonToFile(Object object, ExportProperties properties) throws IOException {
-        String json = objectMapper.writeValueAsString(object);
+    public void saveJsonToFile(ExportProperties properties) throws IOException {
+        JsonDataDto jsonData = accumulatesResponseService.getExportDataDto();
+        String json = objectMapper.writeValueAsString(jsonData);
 
         try (FileWriter writer = new FileWriter(properties.getDestination(), true)) {
             writer.write(json);
@@ -54,7 +56,7 @@ public class DataServiceImpl implements DataService {
     }
 
     private void updateRowsInDataBase(JsonDataDto jsonData) {
-        List<ReferenceImportDto> referenceDtoList = jsonData.getReferences()
+        List<ReferenceImportDto> referenceDtoList = jsonData.getReferences();
 
 
     }
@@ -73,8 +75,8 @@ public class DataServiceImpl implements DataService {
                 .collect(toList());
 
 
-        referenceService.saveReferenceList(referenceImportDtos);
-
+        referenceService.importReferenceList(referenceImportDtos);
+        return null;
     }
 
     private Boolean compareTwoList(String importDataRow, List<String> storageData) {

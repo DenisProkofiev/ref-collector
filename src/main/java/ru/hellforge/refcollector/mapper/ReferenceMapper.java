@@ -16,10 +16,10 @@ import static org.mapstruct.MappingConstants.ComponentModel.SPRING;
  */
 @Mapper(componentModel = SPRING)
 public interface ReferenceMapper {
-    ReferenceDto toDto(Reference reference);
-    Reference toEntity(ReferenceDto referenceDto);
-    List<ReferenceDto> toDtoList(List<Reference> referenceList);
-    List<Reference> toEntityList(List<ReferenceDto> referenceDtoList);
-    ReferenceDto toFullDto(ReferenceImportDto referenceImportDto);
-    List<ReferenceDto> toFullDtoList(List<ReferenceImportDto> referenceImportDtoList);
+    ReferenceDto entityToFullDto(Reference reference);
+    Reference fullDtoToEntity(ReferenceDto referenceDto);
+    List<ReferenceDto> referenceListToFullDtoList(List<Reference> referenceList);
+    List<Reference> fullDtoListToEntityList(List<ReferenceDto> referenceDtoList);
+    List<ReferenceImportDto> entityListToImportDtoList(List<Reference> referenceList);
+    List<Reference> importDtoListToEntityList(List<ReferenceImportDto> referenceDtoList);
 }

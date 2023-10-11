@@ -1,5 +1,6 @@
 package ru.hellforge.refcollector.service;
 
+import ru.hellforge.refcollector.dto.JsonDataDto;
 import ru.hellforge.refcollector.dto.ReferenceDto;
 import ru.hellforge.refcollector.dto.ReferenceFilterDto;
 import ru.hellforge.refcollector.dto.ReferenceResponseDto;
@@ -23,4 +24,5 @@ public interface AccumulatesResponseService {
 
     List<ReferenceResponseDto> getReferenceResponse(ReferenceFilterDto filter);
 
+    JsonDataDto getExportDataDto();
 }
