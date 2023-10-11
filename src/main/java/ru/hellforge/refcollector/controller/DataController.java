@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.hellforge.refcollector.dto.ReferenceDto;
+import ru.hellforge.refcollector.model.ExportProperties;
 import ru.hellforge.refcollector.service.AccumulatesResponseService;
 import ru.hellforge.refcollector.service.DataService;
 
@@ -19,15 +20,19 @@ import static org.springframework.http.HttpStatus.OK;
 public class DataController {
     private final AccumulatesResponseService accumulatesResponseService;
     private final DataService dataService;
-    @GetMapping()
-    public ResponseEntity<List<ReferenceDto>> getDefaultData(@RequestParam List<Long> environmentIdList) {
+//    @GetMapping()
+//    public ResponseEntity<List<ReferenceDto>> getDefaultData(@RequestParam List<Long> environmentIdList) {
+//        return ResponseEntity.status(OK).body(accumulatesResponseService.getReferenceDtoListByReferenceIdList(environmentIdList, properties));
+//    }
 
-        return ResponseEntity.status(OK).body(accumulatesResponseService.getReferenceDtoListByReferenceIdList(environmentIdList));
+    @PostMapping("/export")
+    public void exportDump(@RequestBody ExportProperties properties) throws IOException {
+        dataService.saveJsonToFile(accumulatesResponseService.getReferenceDtoListByReferenceIdList(List.of(21L, 22L)),properties);
     }
 
-    @PostMapping("/dump")
-    public void createDump(@RequestBody String destination) throws IOException {
-        destination = "C:/Users/prokofev.dv.kst/Desktop/ref-collector-dump.txt";
-        dataService.saveJsonToFile(accumulatesResponseService.getReferenceDtoListByReferenceIdList(List.of(21L, 22L)), destination);
+    @GetMapping("/import")
+    public void importDump(@RequestBody String source) throws IOException {
+        dataService.importDataFromFile(source);
     }
+
 }

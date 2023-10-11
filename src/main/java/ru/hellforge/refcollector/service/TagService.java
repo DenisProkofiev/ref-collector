@@ -16,6 +16,8 @@ public interface TagService {
 
     TagDto saveTag(TagDto tagDto);
 
+    List<TagDto> saveTagList(List<TagDto> referenceDtoList);
+
     TagDto getById(Long tagId);
 
     List<TagDto> getTagDtoListByIdList(List<Long> tagIdList);
