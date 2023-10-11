@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.hellforge.refcollector.dto.*;
 import ru.hellforge.refcollector.mapper.ReferenceResponseMapper;
+import ru.hellforge.refcollector.model.ExportProperties;
 import ru.hellforge.refcollector.service.*;
 
 import java.util.*;
@@ -33,6 +34,11 @@ public class AccumulatesResponseServiceImpl implements AccumulatesResponseServic
     @Override
     public List<Long> getReferenceIdListByEnvironmentIdList(List<Long> environmentIdList) {
         return environmentReferenceRelationService.getReferenceIdListByEnvironmentIdList(environmentIdList);
+    }
+
+    @Override
+    public List<ReferenceDto> getReferenceDtoListByReferenceIdList(List<Long> referenceIdList, ExportProperties properties) {
+        return null;
     }
 
     @Override

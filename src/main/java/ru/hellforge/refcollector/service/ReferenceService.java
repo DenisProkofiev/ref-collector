@@ -16,6 +16,8 @@ public interface ReferenceService {
 
     ReferenceDto saveReference(ReferenceDto referenceDto);
 
+    List<ReferenceDto> saveReferenceList(List<ReferenceDto> referenceDtoList);
+
     void deleteById(Long id);
 
     ReferenceDto getReferenceById(Long referenceId);

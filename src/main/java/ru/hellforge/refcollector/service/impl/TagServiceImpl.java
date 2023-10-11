@@ -38,6 +38,13 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
+    public List<TagDto> saveTagList(List<TagDto> referenceDtoList) {
+        List<Tag> tags = tagMapper.toEntityList(referenceDtoList);
+
+        return tagMapper.toDtoList(tagRepository.saveAll(tags));
+    }
+
+    @Override
     public TagDto getById(Long tagId) {
         Tag tagFromDB = tagRepository.findById(tagId).orElseThrow(EntityNotFoundException::new);
 

@@ -36,7 +36,7 @@ public class EnvironmentReferenceRelationServiceImpl implements EnvironmentRefer
 
     @Override
     public EnvironmentReferenceRelation getEnvironmentReferenceRelationByID(Long environmentId) {
-           return environmentReferenceRelationRepository.findById(environmentId).orElseThrow(EntityNotFoundException::new);
+        return environmentReferenceRelationRepository.findById(environmentId).orElseThrow(EntityNotFoundException::new);
 
     }
     @Override
@@ -71,5 +71,6 @@ public class EnvironmentReferenceRelationServiceImpl implements EnvironmentRefer
                 .map(environmentReferenceMapper::toDto)
                 .collect(toList());
     }
+
 
 }

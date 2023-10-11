@@ -3,6 +3,7 @@ package ru.hellforge.refcollector.service;
 import ru.hellforge.refcollector.dto.ReferenceDto;
 import ru.hellforge.refcollector.dto.ReferenceFilterDto;
 import ru.hellforge.refcollector.dto.ReferenceResponseDto;
+import ru.hellforge.refcollector.model.ExportProperties;
 import ru.hellforge.refcollector.model.ReferenceFilter;
 
 import java.util.List;
@@ -15,6 +16,8 @@ import java.util.List;
 public interface AccumulatesResponseService {
 
     List<Long> getReferenceIdListByEnvironmentIdList(List<Long> environmentIdList);
+
+    List<ReferenceDto> getReferenceDtoListByReferenceIdList(List<Long> referenceIdList, ExportProperties properties);
 
     List<ReferenceDto> getReferenceDtoListByReferenceIdList(List<Long> referenceIdList);
 
