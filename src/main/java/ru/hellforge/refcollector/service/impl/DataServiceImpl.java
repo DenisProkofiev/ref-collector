@@ -26,7 +26,6 @@ import static java.util.stream.Collectors.toList;
 public class DataServiceImpl implements DataService {
     private final ObjectMapper objectMapper;
     private final ReferenceService referenceService;
-    private final TagService tagService;
     private final AccumulatesResponseService accumulatesResponseService;
 
 
