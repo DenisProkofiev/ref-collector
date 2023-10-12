@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 public class ExportProperties {
     private String destination;
     private Boolean reference;
-    private Boolean target;
+    private Boolean tag;
     private Boolean environment;
     private Boolean relation;
 }

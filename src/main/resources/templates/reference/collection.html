@@ -14,14 +14,16 @@
 </head>
 
 <body>
-<h1 style="background-image: url('reference-background.jpeg'); margin-top: 0; margin-bottom: 0">
+
+<h1 style="background-image: url('reference-background.png'); margin-top: 0px; margin-bottom: 0px">
 
     <div class="btn-group">
         <select class="dropdown" th:field="*{environments}" id="environments"
                 style="text-align: center; vertical-align: middle; width: 400px; height: 40px;  font-size: 14px">
-            <option value="null">Global environment</option>
+            <option value="null">Environment not selected</option>
             <option th:each="environment : ${environments}"
-                    th:value="${environment.id}" th:text="${environment.name}"/>
+                    th:value="${environment.id}" th:text="${environment.name}">
+            </option>
         </select>
         <button id="create-environment"
                 style="background: #86e0b3; height: 40px; width: 40px; margin-bottom: 7px"
@@ -29,42 +31,28 @@
                 class="btn btn-success" data-toggle="modal" data-target="#environmentCreateDialog">
             <i class="fa fa-plus-square"></i>
         </button>
-    </div>
+    </div >
 
-    <br>
+    <p style="text-align: right; color:white; font-size: 7px; margin-right: 7px; margin-top: 7px">refcollector 0.7</p>
 
-    <div class="btn-group" style="height: 40px; width: 40px; margin-left: 7px; margin-bottom: 7px">
+    <div class="btn-group">
+        <!--  <a style="background: #86e0b3; height: 40px; width: 40px" href="/reference/new" class="btn btn-success"><i class="fa fa-plus-square"></i></a>-->
         <button id="create-reference"
-                style="background: #86e0b3"
+                style="background: #86e0b3; height: 40px; width: 40px; margin-left: 7px; margin-bottom: 7px"
                 type="button"
-                class="btn btn-success" data-toggle="modal"
-                data-target="#referenceCreateDialog">
+                class="btn btn-success" data-toggle="modal" data-target="#referenceCreateDialog">
             <i class="fa fa-plus-square"></i>
         </button>
-        <a style="background: #6babc7"
-           href="/tag"
-           class="btn btn-success">
-            <i class="fa fa-tags"></i>
-        </a>
-        <button id="import-data"
-                style="background: #7ebe6c"
+        <a style="background: #6babc7; height: 40px; width: 40px;  margin-bottom: 7px" href="tag"
+           class="btn btn-success"><i class="fa fa-tags"></i></a>
+        <button id="filter-reference" style="background: limegreen; height: 40px; width: 40px;  margin-bottom: 7px"
                 type="button"
-                class="btn btn-success" data-toggle="modal"
-                data-target="#exportDataDialog">
-            <i class="fa fa-file-import"></i>
-        </button>
-        <button id="filter-reference"
-                style="background: limegreen"
-                type="button"
-                class="btn btn-success"
-                data-toggle="modal"
-                data-target="#referenceFilterDialog">
+                class="btn btn-success" data-toggle="modal" data-target="#referenceFilterDialog">
             <i class="fa fa-filter"></i>
         </button>
     </div>
 
 </h1>
-
 <table class="table table-bordered table-striped">
     <thead class="thead-dark">
     <tr>
@@ -72,73 +60,51 @@
         <th style="text-align: center; vertical-align: middle">name</th>
         <th style="text-align: center; vertical-align: middle">url</th>
         <th style="text-align: center; vertical-align: middle">description</th>
-        <th style="text-align: center; vertical-align: middle; width: 190px">tags</th>
+        <th style="text-align: center; vertical-align: middle; width: 130px">tags</th>
         <th style="text-align: center; vertical-align: middle; width: 110px">create date</th>
-        <th style="text-align: center; vertical-align: middle; width: 140px; align-items: center">actions</th>
+        <th style="text-align: center; vertical-align: middle; width: 160px; align-items: center">actions</th>
     </tr>
     </thead>
     <tbody>
     <tr th:if="${references.empty}">
         <td colspan="6">No reference available</td>
     </tr>
-    <tr th:each="reference : ${references}" style="margin-top: 0px; margin-bottom: 0px">
+    <tr th:each="reference : ${references}">
+        <td style="font-size: 14px; text-align: center; vertical-align: middle"><span th:text="${reference.id}"></span></td>
+        <td style="font-size: 14px; text-align: center; vertical-align: middle"><span th:text="${reference.name}"></span></td>
         <td style="font-size: 14px; text-align: center; vertical-align: middle">
-            <span th:text="${reference.id}"
-                  th:value="${reference.id}"></span>
+            <a id="urlId" th:value="${reference.url}" th:href="${reference.url}" th:text="${reference.url}"
+               target="_blank"></a>
         </td>
-        <td style="font-size: 14px; text-align: center; vertical-align: middle">
-            <span th:text="${reference.name}"></span>
-        </td>
-        <td style="font-size: 12px; text-align: center; vertical-align: middle">
-            <a id="urlId"
-               th:value="${reference.url}"
-               th:href="${reference.url}"
-               th:text="${reference.url}"
-               target="_blank">
-            </a>
-        </td>
-        <td style="font-size: 14px; text-align: center; vertical-align: middle">
-            <span th:text="${reference.description}"></span>
-        </td>
+        <td style="font-size: 14px; text-align: center; vertical-align: middle"><span th:text="${reference.description}"></span></td>
         <td style="text-align: center; vertical-align: middle">
-            <p th:each="tag : ${reference.tagList}"
-               th:value="${tag.name}"
-               th:text="${tag.name}"
+            <p th:each="tag : ${reference.tagList}" th:value="${tag.name}" th:text="${tag.name}"
                class="badge badge-secondary"
-               style="font-size: 12px; text-align: center; vertical-align: middle;  margin-top: 0px; margin-bottom: 4px">
+               style="font-size: 14px; text-align: center; vertical-align: middle;  margin-top: 0px; margin-bottom: 4px">
             </p>
         </td>
-        <td style="font-size: 14px; text-align: center; vertical-align: middle">
-            <span th:text="${reference.createDate}"></span>
-        </td>
-
+        <td style="font-size: 14px; text-align: center; vertical-align: middle"><span th:text="${reference.createDate}"></span></td>
         <td>
-            <div class="btn-group" style="height: 35px; width: 35px">
-                <button id="copyUrlButton"
-                        type="button"
-                        class="btn btn-success"
-                        style="background: #6babc7"
-                        th:data-referenceUrl="${reference.url}"
-                        th:onclick="">
-                    <i class="fa fa-copy"></i>
-                </button>
-                <button id="edit-reference" type="button"
-                        class="btn btn-success"
-                        data-toggle="modal"
-                        data-target="#referenceEditDialog"
-                        th:data-referenceId="${reference.id}">
-                    <i class="fas fa-edit"></i>
-                </button>
-                <button id="delete-reference"
-                        style="background: crimson"
-                        type="button"
-                        class="btn btn-success"
-                        data-toggle="modal"
-                        data-target="#referenceDeleteDialog"
-                        th:data-deleteId="${reference.id}">
-                    <i class="far fa-trash-alt"></i>
-                </button>
-            </div>
+
+            <button id="copyUrlButton" type="button" class="btn btn-success"
+                    style="background: #6babc7"
+                    th:data-referenceUrl="${reference.url}"
+                    th:onclick="">
+                <i class="fa fa-copy"></i>
+            </button>
+
+            <button id="edit-reference" type="button" class="btn btn-success" data-toggle="modal"
+                    data-target="#referenceEditDialog"
+                    th:data-referenceId="${reference.id}">
+                <i class="fas fa-edit"></i>
+            </button>
+
+            <button id="delete-reference" style="background: crimson; height: 40px; width: 40px"
+                    type="button" class="btn btn-success" data-toggle="modal" data-target="#referenceDeleteDialog"
+                    th:data-referenceId="${reference.id}">
+                <i class="far fa-trash-alt"></i>
+            </button>
+
         </td>
     </tr>
     </tbody>
@@ -206,15 +172,6 @@
                             </option>
                         </select>
                     </div>
-                    <div class="form-group">
-                        <label for="environment-name" class="col-form-label">Environments</label>
-                        <select class="form-control selectpicker" th:field="*{environments}" id="environment">
-                            <option value="null">Global environment</option>
-                            <option th:each="environment : ${environments}"
-                                    th:value="${environment.id}" th:text="${environment.name}">
-                            </option>
-                        </select>
-                    </div>
                 </form>
             </div>
             <div class="modal-footer">
@@ -259,15 +216,6 @@
                             </option>
                         </select>
                     </div>
-                    <div class="form-group">
-                        <label for="environment-name" class="col-form-label">Environments</label>
-                        <select class="form-control selectpicker" th:field="*{environments}" id="environment">
-                            <option value="null">Global environment</option>
-                            <option th:each="environment : ${environments}"
-                                    th:value="${environment.id}" th:text="${environment.name}">
-                            </option>
-                        </select>
-                    </div>
                 </form>
             </div>
             <div class="modal-footer">
@@ -282,23 +230,22 @@
      aria-labelledby="referenceDeleteDialogLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="referenceDeleteDialogLabel">Delete reference?</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <form>
-                    <input type="hidden" id="referenceId">
-                </form>
+            <form>
+                <input type="text" id="reference-id">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="referenceDeleteDialogLabel">Delete reference?</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                     <button id="delete-reference-button" class="btn btn-primary" role="button"
                             style="background: crimson">Delete
                     </button>
+                    <!--                    <a class="btn btn-danger btn-ok" th:href="@{/api/v1/reference/delete/{id}(id=${reference-id})}">DeletE</a>-->
                 </div>
-            </div>
+            </form>
         </div>
     </div>
 </div>
@@ -329,80 +276,6 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                 <button id="filter-reference-button" type="button" class="btn btn-primary">Filter</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="modal fade" id="exportDataDialog" tabindex="-1" role="dialog"
-     aria-labelledby="exportDataDialogLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exportDataDialogLabel">Export data</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <form>
-                    <div class="form-group">
-                        <label for="export-destination" class="col-form-label">Destination</label>
-                        <input type="text" class="form-control" id="export-destination"
-                               placeholder="C:\users\public\ref_collector\export_db.txt">
-                    </div>
-                    <fieldset>
-                        <legend>Select export attributes</legend>
-                        <div class="form-group">
-                            <label>References</label>
-                            <div>
-                                <label for="export-reference-true">add</label>
-                                <input type="radio" class="form-check-input" id="export-reference-true"
-                                       name="referenceAnswer" value="true"/>
-                                <label for="export-reference-true">not</label>
-                                <input type="radio" class="form-check-input" id="export-reference-false"
-                                       name="referenceAnswer" checked value="false"/>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label>Tags</label>
-                            <div>
-                                <label for="export-tag-true">add</label>
-                                <input type="radio" class="form-check-input" id="export-tag-true"
-                                       name="tagAnswer" value="true"/>
-                                <label for="export-tag-true">not</label>
-                                <input type="radio" class="form-check-input" id="export-tag-false"
-                                       name="tagAnswer" checked value="false"/>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label>Environment</label>
-                            <div>
-                                <label for="export-environment-true">add</label>
-                                <input type="radio" class="form-check-input" id="export-environment-true"
-                                       name="environmentAnswer" value="true"/>
-                                <label for="export-environment-true">not</label>
-                                <input type="radio" class="form-check-input" id="export-environment-false"
-                                       name="environmentAnswer" checked value="false"/>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label>Relation</label>
-                            <div>
-                                <label for="export-relation-true">add</label>
-                                <input type="radio" class="form-check-input" id="export-relation-true"
-                                       name="relationAnswer" value="true"/>
-                                <label for="export-relation-true">not</label>
-                                <input type="radio" class="form-check-input" id="export-relation-false"
-                                       name="relationAnswer" checked value="false"/>
-                            </div>
-                        </div>
-                    </fieldset>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button id="export-data-button" type="button" class="btn btn-primary">Export</button>
             </div>
         </div>
     </div>
@@ -553,17 +426,9 @@
 </script>
 
 <script>
-    $('#referenceDeleteDialog').on('shown.bs.modal', function (event) {
+    $('#delete-reference-button').on('shown.bs.modal', function (event) {
         let button = $(event.relatedTarget)
-        console.info(button.data('referenceId'))
-        let modal = button.data('referenceId')
-
-    })
-
-    $('#delete-reference-button').click(function () {
-        let modal = $('#referenceDeleteDialog')
-        console.error(modal.find('#referenceId'))
-        let id = modal.find('#referenceId').val()
+        let id = button.data('referenceid')
 
         $.ajax({
             url: '/api/v1/reference/delete/' + id,
@@ -586,33 +451,6 @@
     })
 </script>
 
-<script>
-    $('#export-data-button').click(function () {
-        let modal = $('#exportDataDialog')
-        let exportProperties = {
-            destination: modal.find('#export-destination').val(),
-            reference: modal.find('#referenceAnswer').val(),
-            tag: modal.find('#tagAnswer').val(),
-            environment: modal.find('#environmentAnswer').val(),
-            relation: modal.find('#relationAnswer').val()
-        };
 
-        $.ajax({
-            url: '/api/v1/export',
-            type: 'POST',
-            data: JSON.stringify(exportProperties),
-            contentType: "application/json; charset=utf-8",
-            dataType: "json",
-            success: () => {
-                location.reload()
-            },
-            error: (err) => {
-                alert(err);
-            }
-        })
-
-        modal.modal('hide');
-    });
-</script>
 </body>
 </html>
