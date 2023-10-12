@@ -354,47 +354,31 @@
                     <fieldset>
                         <legend>Select export attributes</legend>
                         <div class="form-group">
-                            <label>References</label>
-                            <div>
-                                <label for="export-reference-true">add</label>
-                                <input type="radio" class="form-check-input" id="export-reference-true"
-                                       name="referenceAnswer" value="true"/>
-                                <label for="export-reference-true">not</label>
-                                <input type="radio" class="form-check-input" id="export-reference-false"
-                                       name="referenceAnswer" checked value="false"/>
+                            <div class="custom-control custom-switch">
+                                <input type="checkbox" class="custom-control-input" id="export-reference" name="referenceAnswer" checked>
+                                <label class="custom-control-label" for="export-reference">References</label>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label>Tags</label>
-                            <div>
-                                <label for="export-tag-true">add</label>
-                                <input type="radio" class="form-check-input" id="export-tag-true"
-                                       name="tagAnswer" value="true"/>
-                                <label for="export-tag-true">not</label>
-                                <input type="radio" class="form-check-input" id="export-tag-false"
-                                       name="tagAnswer" checked value="false"/>
+                            <div class="custom-control custom-switch">
+                                <input type="checkbox" class="custom-control-input" id="export-tag" name="tagAnswer" checked>
+                                <label class="custom-control-label" for="export-tag">Tags</label>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label>Environment</label>
                             <div>
-                                <label for="export-environment-true">add</label>
-                                <input type="radio" class="form-check-input" id="export-environment-true"
-                                       name="environmentAnswer" value="true"/>
-                                <label for="export-environment-true">not</label>
-                                <input type="radio" class="form-check-input" id="export-environment-false"
-                                       name="environmentAnswer" checked value="false"/>
+                                <div class="custom-control custom-switch">
+                                    <input type="checkbox" class="custom-control-input" id="export-environment" name="environmentAnswer" checked>
+                                    <label class="custom-control-label" for="export-environment">Environment</label>
+                                </div>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label>Relation</label>
                             <div>
-                                <label for="export-relation-true">add</label>
-                                <input type="radio" class="form-check-input" id="export-relation-true"
-                                       name="relationAnswer" value="true"/>
-                                <label for="export-relation-true">not</label>
-                                <input type="radio" class="form-check-input" id="export-relation-false"
-                                       name="relationAnswer" checked value="false"/>
+                                <div class="custom-control custom-switch">
+                                    <input type="checkbox" class="custom-control-input" id="export-relation" name="relationAnswer" checked>
+                                    <label class="custom-control-label" for="export-relation">Relation</label>
+                                </div>
                             </div>
                         </div>
                     </fieldset>
