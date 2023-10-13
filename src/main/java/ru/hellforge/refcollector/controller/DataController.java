@@ -20,10 +20,6 @@ import static org.springframework.http.HttpStatus.OK;
 public class DataController {
     private final AccumulatesResponseService accumulatesResponseService;
     private final DataService dataService;
-//    @GetMapping()
-//    public ResponseEntity<List<ReferenceDto>> getDefaultData(@RequestParam List<Long> environmentIdList) {
-//        return ResponseEntity.status(OK).body(accumulatesResponseService.getReferenceDtoListByReferenceIdList(environmentIdList, properties));
-//    }
 
     @PostMapping("/export")
     public void exportDump(@RequestBody ExportProperties properties) throws IOException {
