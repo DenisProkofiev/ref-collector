@@ -36,8 +36,8 @@ public class DataServiceImpl implements DataService {
         try (FileWriter writer = new FileWriter(properties.getDestination(), true)) {
             writer.write(json);
             writer.flush();
-        } catch (IOException ignored) {
-
+        } catch (IOException e) {
+            System.out.println("Error: check destination path");
         }
     }
 
