@@ -13,5 +13,10 @@ import java.util.List;
 @AllArgsConstructor
 public class ExportProperties {
     private String destination;
-    private List<String> transferObjects;
+    private String fileName;
+    private String file;
+    private Boolean reference;
+    private Boolean tag;
+    private Boolean environment;
+    private Boolean relation;
 }

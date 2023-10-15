@@ -46,11 +46,20 @@
            class="btn btn-success">
             <i class="fa fa-tags"></i>
         </a>
-        <button id="import-data"
+        <button id="export-data"
+                title="export"
                 style="background: #7ebe6c"
                 type="button"
                 class="btn btn-success" data-toggle="modal"
                 data-target="#exportDataDialog">
+            <i class="fa fa-file-export"></i>
+        </button>
+        <button id="import-data"
+                title="import"
+                style="background: #19acbe"
+                type="button"
+                class="btn btn-success" data-toggle="modal"
+                data-target="#importDataDialog">
             <i class="fa fa-file-import"></i>
         </button>
         <button id="filter-reference"
@@ -337,7 +346,7 @@
 <div class="modal fade" id="exportDataDialog" tabindex="-1" role="dialog"
      aria-labelledby="exportDataDialogLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
-        <div class="modal-content">
+        <div class="modal-content" style="align-self: center; ">
             <div class="modal-header">
                 <h5 class="modal-title" id="exportDataDialogLabel">Export data</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -346,48 +355,114 @@
             </div>
             <div class="modal-body">
                 <form>
-                    <div class="form-group">
-                        <label for="export-destination" class="col-form-label">Destination</label>
-                        <input type="text" class="form-control" id="export-destination"
-                               placeholder="C:\users\public\export_db.txt"
-                               value="C:\users\public\export_db.txt">
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="export-destination-text">Destination</span>
+                        </div>
+                        <input type="text" class="form-control" aria-label="Default"
+                               aria-describedby="export-destination-text"
+                               placeholder="C:\users\public\"
+                               value="C:\users\public\"
+                               id="export-destination">
                     </div>
-                    <fieldset>
-                        <label>Select export attributes</label>
-                        <div class="form-group">
-                            <div class="custom-control custom-switch">
-                                <input type="checkbox" class="custom-control-input" id="export-reference" name="referenceAnswer" checked>
-                                <label class="custom-control-label" for="export-reference">References</label>
-                            </div>
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="export-filename-text">Filename</span>
                         </div>
-                        <div class="form-group">
-                            <div class="custom-control custom-switch">
-                                <input type="checkbox" class="custom-control-input" id="export-tag" name="tagAnswer" checked>
-                                <label class="custom-control-label" for="export-tag">Tags</label>
-                            </div>
+                        <input type="text" class="form-control" aria-label="Default"
+                               aria-describedby="export-filename-text"
+                               placeholder="export_db.txt"
+                               value="export_db.txt"
+                               id="export-filename">
+                    </div>
+                    <div class="form-group">
+                        <div class="custom-control custom-switch">
+                            <input type="checkbox" class="custom-control-input" id="append-date"
+                                   name="appendDateAnswer">
+                            <label class="custom-control-label" for="append-date">Append date</label>
                         </div>
-                        <div class="form-group">
-                            <div>
-                                <div class="custom-control custom-switch">
-                                    <input type="checkbox" class="custom-control-input" id="export-environment" name="environmentAnswer" checked>
-                                    <label class="custom-control-label" for="export-environment">Environment</label>
+                    </div>
+                    <label style="font-size: 18px">Select export attributes</label>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <fieldset>
+                                <div class="form-group">
+                                    <div class="custom-control custom-switch">
+                                        <input type="checkbox" class="custom-control-input" id="export-reference"
+                                               name="referenceAnswer">
+                                        <label class="custom-control-label" for="export-reference">References</label>
+                                    </div>
                                 </div>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <div>
-                                <div class="custom-control custom-switch">
-                                    <input type="checkbox" class="custom-control-input" id="export-relation" name="relationAnswer" checked>
-                                    <label class="custom-control-label" for="export-relation">Relation</label>
+                                <div class="form-group">
+                                    <div class="custom-control custom-switch">
+                                        <input type="checkbox" class="custom-control-input" id="export-tag"
+                                               name="tagAnswer">
+                                        <label class="custom-control-label" for="export-tag">Tags</label>
+                                    </div>
                                 </div>
-                            </div>
+                            </fieldset>
                         </div>
-                    </fieldset>
+                        <div class="col-md-6">
+                            <fieldset>
+                                <div class="form-group">
+                                    <div>
+                                        <div class="custom-control custom-switch">
+                                            <input type="checkbox" class="custom-control-input" id="export-environment"
+                                                   name="environmentAnswer">
+                                            <label class="custom-control-label"
+                                                   for="export-environment">Environment</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div>
+                                        <div class="custom-control custom-switch">
+                                            <input type="checkbox" class="custom-control-input" id="export-relation"
+                                                   name="relationAnswer" checked>
+                                            <label class="custom-control-label" for="export-relation">Relation</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </fieldset>
+                        </div>
+                    </div>
                 </form>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                 <button id="export-data-button" type="button" class="btn btn-primary">Export</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="importDataDialog" tabindex="-1" role="dialog"
+     aria-labelledby="importDataDialogLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content" style="align-self: center; ">
+            <div class="modal-header">
+                <h5 class="modal-title" id="importDataDialogLabel">Import data</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="import-destination-text">Destination</span>
+                        </div>
+                        <input type="text" class="form-control" aria-label="Default"
+                               aria-describedby="export-destination-text"
+                               placeholder="C:\users\public\"
+                               value="C:\users\public\"
+                               id="import-destination">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button id="import-data-button" type="button" class="btn btn-primary">Export</button>
             </div>
         </div>
     </div>
@@ -577,6 +652,7 @@
         let exportProperties = {
             destination: modal.find('#export-destination').val(),
             reference: modal.find('#referenceAnswer').val(),
+            fileName: modal.find('#export-filename').val(),
             tag: modal.find('#tagAnswer').val(),
             environment: modal.find('#environmentAnswer').val(),
             relation: modal.find('#relationAnswer').val()
