@@ -3,6 +3,7 @@ package ru.hellforge.refcollector.service.impl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.hellforge.refcollector.dto.JsonDataDto;
 import ru.hellforge.refcollector.dto.ReferenceDto;
 import ru.hellforge.refcollector.dto.ReferenceImportDto;
@@ -10,7 +11,6 @@ import ru.hellforge.refcollector.model.ExportProperties;
 import ru.hellforge.refcollector.service.AccumulatesResponseService;
 import ru.hellforge.refcollector.service.DataService;
 import ru.hellforge.refcollector.service.ReferenceService;
-import ru.hellforge.refcollector.service.TagService;
 
 import java.io.FileWriter;
 import java.io.IOException;
@@ -28,12 +28,14 @@ public class DataServiceImpl implements DataService {
     private final ReferenceService referenceService;
     private final AccumulatesResponseService accumulatesResponseService;
 
-
+    @Transactional
     public void saveJsonToFile(ExportProperties properties) throws IOException {
-        JsonDataDto jsonData = accumulatesResponseService.getExportDataDto();
+        JsonDataDto jsonData = accumulatesResponseService.getExportDataDto(properties);
         String json = objectMapper.writeValueAsString(jsonData);
 
-        try (FileWriter writer = new FileWriter(properties.getDestination(), true)) {
+        String fileDestination = properties.getDestination().concat(properties.getFileName());
+
+        try (FileWriter writer = new FileWriter(fileDestination)) {
             writer.write(json);
             writer.flush();
         } catch (IOException e) {
@@ -55,7 +57,7 @@ public class DataServiceImpl implements DataService {
     }
 
     private void updateRowsInDataBase(JsonDataDto jsonData) {
-        List<ReferenceImportDto> referenceDtoList = jsonData.getReferences();
+        System.out.println(jsonData);
 
 
     }

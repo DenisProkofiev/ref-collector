@@ -5,7 +5,6 @@ import ru.hellforge.refcollector.dto.ReferenceDto;
 import ru.hellforge.refcollector.dto.ReferenceFilterDto;
 import ru.hellforge.refcollector.dto.ReferenceResponseDto;
 import ru.hellforge.refcollector.model.ExportProperties;
-import ru.hellforge.refcollector.model.ReferenceFilter;
 
 import java.util.List;
 
@@ -24,5 +23,5 @@ public interface AccumulatesResponseService {
 
     List<ReferenceResponseDto> getReferenceResponse(ReferenceFilterDto filter);
 
-    JsonDataDto getExportDataDto();
+    JsonDataDto getExportDataDto(ExportProperties properties);
 }

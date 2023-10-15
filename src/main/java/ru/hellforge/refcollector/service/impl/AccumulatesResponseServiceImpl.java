@@ -10,7 +10,9 @@ import ru.hellforge.refcollector.service.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static java.lang.Boolean.TRUE;
 import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toList;
 import static org.springframework.util.CollectionUtils.isEmpty;
@@ -93,20 +95,19 @@ public class AccumulatesResponseServiceImpl implements AccumulatesResponseServic
     }
 
     @Override
-    public JsonDataDto getExportDataDto() {
-        List<ReferenceImportDto> referenceImportDtos = referenceService.getAllImportReference();
-        List<TagImportDto> tagImportList = tagService.getAllImportTag();
-        List<EnvironmentImportDto> environmentImportDtos = environmentService.getAllImportEnvironment();
-        List<BaseRelationImportDto> baseRelationImportDtos = baseRelationService.getAllImportBaseRelation();
+    public JsonDataDto getExportDataDto(ExportProperties properties) {
+        List<ReferenceImportDto> referenceImportDtos = TRUE.equals(properties.getEnvironment()) ? (referenceService.getAllImportReference()) : null;
+        List<TagImportDto> tagImportList = TRUE.equals(properties.getTag()) ? tagService.getAllImportTag() : null;
+        List<EnvironmentImportDto> environmentImportDtos = TRUE.equals(properties.getEnvironment()) ? environmentService.getAllImportEnvironment() : null;
+        List<BaseRelationImportDto> baseRelationImportDtos = TRUE.equals(properties.getRelation()) ? baseRelationService.getAllImportBaseRelation() : null;
 
         return JsonDataDto.builder()
-                .references(referenceImportDtos)
-                .tags(tagImportList)
-                .environments(environmentImportDtos)
-                .baseRelations(baseRelationImportDtos)
+                .references(referenceService.getAllImportReference())
+                .tags(tagService.getAllImportTag())
+                .environments(environmentService.getAllImportEnvironment())
+                .baseRelations(baseRelationService.getAllImportBaseRelation())
                 .build();
     }
-
 
     private boolean getFilterPredicate(ReferenceFilterDto filter, Long id) {
         return isNull(filter) || isEmpty(filter.getTagsIdList()) || filter.getTagsIdList().contains(id);
