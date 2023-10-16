@@ -450,19 +450,18 @@
                 <form>
                     <div class="input-group mb-3">
                         <div class="input-group-prepend">
-                            <span class="input-group-text" id="import-destination-text">Destination</span>
+                            <span class="input-group-text" id="import-source-text">Source</span>
                         </div>
-                        <input type="text" class="form-control" aria-label="Default"
-                               aria-describedby="export-destination-text"
-                               placeholder="C:\users\public\"
-                               value="C:\users\public\"
-                               id="import-destination">
+                        <div class="custom-file">
+                            <input type="file" class="custom-file-input" id="input-data-file" aria-describedby="import-source-text">
+                            <label class="custom-file-label" for="input-data-file">Choose file</label>
+                        </div>
                     </div>
                 </form>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button id="import-data-button" type="button" class="btn btn-primary">Export</button>
+                <button id="import-data-button" type="button" class="btn btn-primary">Import</button>
             </div>
         </div>
     </div>
@@ -662,6 +661,28 @@
             url: '/api/v1/export',
             type: 'POST',
             data: JSON.stringify(exportProperties),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: () => {
+                location.reload()
+            },
+            error: (err) => {
+                alert(err);
+            }
+        })
+
+        modal.modal('hide');
+    });
+</script>
+<script>
+    $('#import-data-button').click(function () {
+        let modal = $('#importDataDialog')
+        let source = {
+            destination: modal.find('#input-data-file').val()
+        };
+        $.ajax({
+            url: '/api/v1/import' + source,
+            type: 'GET',
             contentType: "application/json; charset=utf-8",
             dataType: "json",
             success: () => {
