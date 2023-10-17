@@ -19,7 +19,7 @@ public interface ReferenceService {
 
     List<ReferenceDto> saveReferenceList(List<ReferenceDto> referenceDtoList);
 
-    void importReferenceList(List<ReferenceImportDto> referenceDtoList);
+    List<ReferenceImportDto> importReference(List<ReferenceImportDto> referenceDtoList);
 
     void deleteById(Long id);
 

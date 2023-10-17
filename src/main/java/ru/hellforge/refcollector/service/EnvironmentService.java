@@ -19,4 +19,6 @@ public interface EnvironmentService {
     Boolean isEnvironmentExist(Long environmentId);
 
     List<EnvironmentImportDto> getAllImportEnvironment();
+
+    List<EnvironmentImportDto> importEnvironment(List<EnvironmentImportDto> environments);
 }

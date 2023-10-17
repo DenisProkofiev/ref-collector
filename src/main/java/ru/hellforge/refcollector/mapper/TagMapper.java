@@ -15,14 +15,10 @@ import ru.hellforge.refcollector.model.entity.Tag;
  */
 @Mapper(componentModel = SPRING)
 public interface TagMapper {
-
     Tag toEntity(TagDto tagDto);
-
     TagDto toDto(Tag tag);
-
     List<TagDto> toDtoList(List<Tag> tagList);
-
     List<Tag> toEntityList(List<TagDto> tagDtoList);
-
     List<TagImportDto> entityListToImportDtoList(List<Tag> tagList);
+    List<Tag> importDtoListToEntityList(List<TagImportDto> tagImportDtoList);
 }

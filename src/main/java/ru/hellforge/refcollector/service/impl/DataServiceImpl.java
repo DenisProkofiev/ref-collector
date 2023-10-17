@@ -2,40 +2,44 @@ package ru.hellforge.refcollector.service.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.hellforge.refcollector.dto.JsonDataDto;
-import ru.hellforge.refcollector.dto.ReferenceDto;
-import ru.hellforge.refcollector.dto.ReferenceImportDto;
+import ru.hellforge.refcollector.dto.*;
 import ru.hellforge.refcollector.model.ExportProperties;
-import ru.hellforge.refcollector.service.AccumulatesResponseService;
-import ru.hellforge.refcollector.service.DataService;
-import ru.hellforge.refcollector.service.ReferenceService;
+import ru.hellforge.refcollector.service.*;
 
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
-import static java.util.stream.Collectors.toList;
+import static java.lang.Boolean.TRUE;
+import static org.apache.logging.log4j.util.Strings.EMPTY;
+import static org.springframework.util.CollectionUtils.isEmpty;
 
 @Service
 @RequiredArgsConstructor
 public class DataServiceImpl implements DataService {
     private final ObjectMapper objectMapper;
     private final ReferenceService referenceService;
+    private final EnvironmentService environmentService;
+    private final BaseRelationService baseRelationService;
     private final AccumulatesResponseService accumulatesResponseService;
+    private final String EXPORT_DATE_FORMAT = "yyyy-MM-dd_HH-MM";
+    private final String EXPORT_DELIMITER = "_";
+    private TagService tagService;
 
     @Transactional
-    public void saveJsonToFile(ExportProperties properties) throws IOException {
+    public void exportDumpToFile(ExportProperties properties) throws IOException {
         JsonDataDto jsonData = accumulatesResponseService.getExportDataDto(properties);
         String json = objectMapper.writeValueAsString(jsonData);
 
-        String fileDestination = properties.getDestination().concat(properties.getFileName());
-
-        try (FileWriter writer = new FileWriter(fileDestination)) {
+        try (FileWriter writer = new FileWriter(computeFileName(properties))) {
             writer.write(json);
             writer.flush();
         } catch (IOException e) {
@@ -44,9 +48,9 @@ public class DataServiceImpl implements DataService {
     }
 
     @Override
-    public void importDataFromFile(String source) throws IOException {
+    public JsonDataDto importDataFromFile(String source) throws IOException {
         JsonDataDto jsonDataDto = importJsonFromFile(source);
-        updateRowsInDataBase(jsonDataDto);
+       return updateStorageData(jsonDataDto);
     }
 
     private JsonDataDto importJsonFromFile(String source) throws IOException {
@@ -56,32 +60,38 @@ public class DataServiceImpl implements DataService {
         return objectMapper.readValue(jsonString, JsonDataDto.class);
     }
 
-    private void updateRowsInDataBase(JsonDataDto jsonData) {
-        System.out.println(jsonData);
+    private JsonDataDto updateStorageData(JsonDataDto jsonData) {
+        List<ReferenceImportDto> savedReference = null;
+        List<TagImportDto> savedTags = null;
+        List<EnvironmentImportDto> savedEnvironment = null;
+        List<BaseRelationImportDto> savedBaseRelation = null;
 
+        if (!isEmpty(jsonData.getReferences()))
+            savedReference = referenceService.importReference(jsonData.getReferences());
+        if (!isEmpty(jsonData.getTags()))
+            savedTags = tagService.importTag(jsonData.getTags());
+        if(!isEmpty(jsonData.getEnvironments()))
+            savedEnvironment = environmentService.importEnvironment(jsonData.getEnvironments());
+//        if(!isEmpty(jsonData.getBaseRelations()))
+//            savedBaseRelation = baseRelationService.importBaseRelation(jsonData.getBaseRelations());
 
+        return JsonDataDto.builder()
+                .references(savedReference)
+                .tags(savedTags)
+                .environments(savedEnvironment)
+                .baseRelations(savedBaseRelation)
+                .build();
     }
 
-    private List<String> compareImportDataWithStorageData(JsonDataDto jsonData) {
-        List<String> dataBaseUrls = referenceService.getAllReference(null).stream()
-                .map(ReferenceDto::getUrl)
-                .collect(toList());
+    private String computeFileName(ExportProperties properties) {
+        String date = LocalDateTime.now().format(DateTimeFormatter.ofPattern(EXPORT_DATE_FORMAT));
 
-        List<String> importDataUrls = jsonData.getReferences().stream()
-                .map(ReferenceImportDto::getUrl)
-                .collect(toList());
-
-        List<ReferenceImportDto> referenceImportDtos = jsonData.getReferences().stream()
-                .filter(row -> compareTwoList(row.getUrl(), dataBaseUrls))
-                .collect(toList());
-
-
-        referenceService.importReferenceList(referenceImportDtos);
-        return null;
-    }
-
-    private Boolean compareTwoList(String importDataRow, List<String> storageData) {
-        return !storageData.contains(importDataRow);
+        return properties.getDestination()
+                .concat(properties.getFileName())
+                .concat(EXPORT_DELIMITER)
+                .concat(EXPORT_DELIMITER)
+                .concat(properties.getAppendDate().equals(TRUE) ? date : EMPTY)
+                .concat(".txt");
     }
 
 }
