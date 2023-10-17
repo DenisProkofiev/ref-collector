@@ -14,8 +14,10 @@ import ru.hellforge.refcollector.service.ReferenceTagRelationService;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static java.util.Objects.isNull;
+import static java.util.stream.Collectors.toList;
 
 /**
  * ReferenceServiceImpl.
@@ -77,8 +79,11 @@ public class ReferenceServiceImpl implements ReferenceService {
     }
 
     @Override
-    public void importReferenceList(List<ReferenceImportDto> referenceDtoList) {
-        List<Reference> savedReferences = referenceRepository.saveAll(referenceMapper.importDtoListToEntityList(referenceDtoList));
+    public List<ReferenceImportDto> importReference(List<ReferenceImportDto> referenceImportDtoList) {
+        List<ReferenceImportDto> referenceImportToSave = compareImportReference(referenceImportDtoList);
+        List<Reference> savedList = referenceRepository.saveAll(referenceMapper.importDtoListToEntityList(referenceImportToSave));
+
+        return referenceMapper.entityListToImportDtoList(savedList);
     }
 
     @Override
@@ -86,8 +91,12 @@ public class ReferenceServiceImpl implements ReferenceService {
         referenceRepository.deleteById(id);
     }
 
-    public List<ReferenceImportDto> getNewRows() {
-        return null;
+    private List<ReferenceImportDto> compareImportReference(List<ReferenceImportDto> referenceImportList) {
+        List<Reference> references = referenceRepository.findAll();
+
+        return referenceImportList.stream()
+                .filter(references::contains)
+                .collect(toList());
     }
 
 }

@@ -22,4 +22,5 @@ public interface ReferenceMapper {
     List<Reference> fullDtoListToEntityList(List<ReferenceDto> referenceDtoList);
     List<ReferenceImportDto> entityListToImportDtoList(List<Reference> referenceList);
     List<Reference> importDtoListToEntityList(List<ReferenceImportDto> referenceDtoList);
+    List<ReferenceImportDto> fullDtoListToImportDtoList(List<ReferenceDto> referenceDtoList);
 }

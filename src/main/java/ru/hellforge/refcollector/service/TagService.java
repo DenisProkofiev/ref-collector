@@ -1,5 +1,6 @@
 package ru.hellforge.refcollector.service;
 
+import ru.hellforge.refcollector.dto.ReferenceImportDto;
 import ru.hellforge.refcollector.dto.TagDto;
 import ru.hellforge.refcollector.dto.TagFilter;
 import ru.hellforge.refcollector.dto.TagImportDto;
@@ -26,4 +27,6 @@ public interface TagService {
     void deleteById(Long id);
 
     List<TagImportDto> getAllImportTag();
+
+    List<TagImportDto> importTag(List<TagImportDto> tagImportDtoList);
 }

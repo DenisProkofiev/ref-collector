@@ -14,7 +14,7 @@ import java.util.List;
 public class ExportProperties {
     private String destination;
     private String fileName;
-    private String file;
+    private Boolean appendDate;
     private Boolean reference;
     private Boolean tag;
     private Boolean environment;

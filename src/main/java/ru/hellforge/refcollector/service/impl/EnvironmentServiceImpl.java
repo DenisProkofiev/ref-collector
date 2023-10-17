@@ -17,6 +17,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import static java.util.stream.Collectors.toList;
+
 @Service
 @RequiredArgsConstructor
 public class EnvironmentServiceImpl implements EnvironmentService {
@@ -35,7 +37,7 @@ public class EnvironmentServiceImpl implements EnvironmentService {
     public List<Long> getAllEnvironmentId() {
         return getAllEnvironment().stream()
                 .map(EnvironmentDto::getId)
-                .collect(Collectors.toList());
+                .collect(toList());
     }
 
     @Override
@@ -62,6 +64,25 @@ public class EnvironmentServiceImpl implements EnvironmentService {
     @Override
     public List<EnvironmentImportDto> getAllImportEnvironment() {
         return environmentMapper.entityListToImportDtoList(environmentRepository.findAll());
+    }
+
+    @Override
+    public List<EnvironmentImportDto> importEnvironment(List<EnvironmentImportDto> environmentsImportList) {
+        List<EnvironmentImportDto> newEnvironmentImports = compareImportReference(environmentsImportList);
+
+        List<Environment> environments = environmentRepository.saveAll(environmentMapper.importDtoListToEntityList(newEnvironmentImports));
+
+        return environmentMapper.entityListToImportDtoList(environments);
+    }
+
+    private List<EnvironmentImportDto> compareImportReference(List<EnvironmentImportDto> referenceImportList) {
+        List<String> referencesName = environmentRepository.findAll().stream()
+                .map(Environment::getName)
+                .collect(toList());
+
+        return referenceImportList.stream()
+                .filter(referencesName::contains)
+                .collect(toList());
     }
 
 }

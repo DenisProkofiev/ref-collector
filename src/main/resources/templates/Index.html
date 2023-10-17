@@ -371,14 +371,15 @@
                         </div>
                         <input type="text" class="form-control" aria-label="Default"
                                aria-describedby="export-filename-text"
-                               placeholder="export_db.txt"
-                               value="export_db.txt"
+                               placeholder="export_db"
+                               value="export_db"
                                id="export-filename">
                     </div>
                     <div class="form-group">
                         <div class="custom-control custom-switch">
-                            <input type="checkbox" class="custom-control-input" id="append-date"
-                                   name="appendDateAnswer">
+                            <input type="checkbox"
+                                   class="custom-control-input"
+                                   id="append-date">
                             <label class="custom-control-label" for="append-date">Append date</label>
                         </div>
                     </div>
@@ -388,15 +389,18 @@
                             <fieldset>
                                 <div class="form-group">
                                     <div class="custom-control custom-switch">
-                                        <input type="checkbox" class="custom-control-input" id="export-reference"
-                                               name="referenceAnswer">
+                                        <input type="checkbox"
+                                               class="custom-control-input"
+                                               id="export-reference">
                                         <label class="custom-control-label" for="export-reference">References</label>
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <div class="custom-control custom-switch">
-                                        <input type="checkbox" class="custom-control-input" id="export-tag"
-                                               name="tagAnswer">
+                                        <input type="checkbox"
+                                               class="custom-control-input"
+                                               id="export-tag"
+                                               value="false">
                                         <label class="custom-control-label" for="export-tag">Tags</label>
                                     </div>
                                 </div>
@@ -407,8 +411,9 @@
                                 <div class="form-group">
                                     <div>
                                         <div class="custom-control custom-switch">
-                                            <input type="checkbox" class="custom-control-input" id="export-environment"
-                                                   name="environmentAnswer">
+                                            <input type="checkbox"
+                                                   class="custom-control-input"
+                                                   id="export-environment">
                                             <label class="custom-control-label"
                                                    for="export-environment">Environment</label>
                                         </div>
@@ -417,8 +422,9 @@
                                 <div class="form-group">
                                     <div>
                                         <div class="custom-control custom-switch">
-                                            <input type="checkbox" class="custom-control-input" id="export-relation"
-                                                   name="relationAnswer" checked>
+                                            <input type="checkbox"
+                                                   class="custom-control-input"
+                                                   id="export-relation">
                                             <label class="custom-control-label" for="export-relation">Relation</label>
                                         </div>
                                     </div>
@@ -453,7 +459,8 @@
                             <span class="input-group-text" id="import-source-text">Source</span>
                         </div>
                         <div class="custom-file">
-                            <input type="file" class="custom-file-input" id="input-data-file" aria-describedby="import-source-text">
+                            <input type="file" class="custom-file-input" id="input-data-file"
+                                   aria-describedby="import-source-text">
                             <label class="custom-file-label" for="input-data-file">Choose file</label>
                         </div>
                     </div>
@@ -650,11 +657,12 @@
         let modal = $('#exportDataDialog')
         let exportProperties = {
             destination: modal.find('#export-destination').val(),
-            reference: modal.find('#referenceAnswer').val(),
             fileName: modal.find('#export-filename').val(),
-            tag: modal.find('#tagAnswer').val(),
-            environment: modal.find('#environmentAnswer').val(),
-            relation: modal.find('#relationAnswer').val()
+            appendDate: convertTogglePositionToBoolean(modal.find('#append-date').val()),
+            reference: convertTogglePositionToBoolean(modal.find('#export-reference').val()),
+            tag: convertTogglePositionToBoolean(modal.find('#export-tag').val()),
+            environment: convertTogglePositionToBoolean(modal.find('#export-environment').val()),
+            relation: convertTogglePositionToBoolean(modal.find('#export-relation').val())
         };
 
         $.ajax({
@@ -692,9 +700,14 @@
                 alert(err);
             }
         })
-
         modal.modal('hide');
     });
 </script>
+<script>
+    function convertTogglePositionToBoolean(radio) {
+        return radio === "on";
+    }
+</script>
+
 </body>
 </html>

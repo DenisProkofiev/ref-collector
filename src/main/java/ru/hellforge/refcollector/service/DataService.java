@@ -6,7 +6,7 @@ import ru.hellforge.refcollector.model.ExportProperties;
 import java.io.IOException;
 
 public interface DataService {
-    void saveJsonToFile(ExportProperties properties) throws IOException;
+    void exportDumpToFile(ExportProperties properties) throws IOException;
 
-    void importDataFromFile(String source) throws IOException;
+    JsonDataDto importDataFromFile(String source) throws IOException;
 }

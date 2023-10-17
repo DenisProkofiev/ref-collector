@@ -15,4 +15,6 @@ public interface EnvironmentMapper {
     EnvironmentDto toDto(Environment environment);
     List<EnvironmentDto> toDtoList(List<Environment> environmentList);
     List<EnvironmentImportDto> entityListToImportDtoList(List<Environment> all);
+
+    List<Environment> importDtoListToEntityList(List<EnvironmentImportDto> newEnvironmentImports);
 }
