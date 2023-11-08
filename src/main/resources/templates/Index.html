@@ -658,13 +658,14 @@
         let exportProperties = {
             destination: modal.find('#export-destination').val(),
             fileName: modal.find('#export-filename').val(),
-            appendDate: convertTogglePositionToBoolean(modal.find('#append-date').val()),
-            reference: convertTogglePositionToBoolean(modal.find('#export-reference').val()),
-            tag: convertTogglePositionToBoolean(modal.find('#export-tag').val()),
-            environment: convertTogglePositionToBoolean(modal.find('#export-environment').val()),
-            relation: convertTogglePositionToBoolean(modal.find('#export-relation').val())
+            appendDate: modal.find('#append-date').is(':checked'),
+            reference: modal.find('#export-reference').is(':checked'),
+            tag: modal.find('#export-tag').is(':checked'),
+            environment: modal.find('#export-environment').is(':checked'),
+            relation: modal.find('#export-relation').is(':checked')
         };
 
+        console.error(exportProperties)
         $.ajax({
             url: '/api/v1/export',
             type: 'POST',
@@ -690,7 +691,7 @@
         };
         $.ajax({
             url: '/api/v1/import' + source,
-            type: 'GET',
+            type: 'POST',
             contentType: "application/json; charset=utf-8",
             dataType: "json",
             success: () => {
@@ -702,11 +703,6 @@
         })
         modal.modal('hide');
     });
-</script>
-<script>
-    function convertTogglePositionToBoolean(radio) {
-        return radio === "on";
-    }
 </script>
 
 </body>

@@ -2,7 +2,6 @@ package ru.hellforge.refcollector.service.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.hellforge.refcollector.dto.*;
@@ -28,11 +27,11 @@ public class DataServiceImpl implements DataService {
     private final ObjectMapper objectMapper;
     private final ReferenceService referenceService;
     private final EnvironmentService environmentService;
-    private final BaseRelationService baseRelationService;
+    private final RelationService baseRelationService;
     private final AccumulatesResponseService accumulatesResponseService;
-    private final String EXPORT_DATE_FORMAT = "yyyy-MM-dd_HH-MM";
-    private final String EXPORT_DELIMITER = "_";
-    private TagService tagService;
+    private final String EXPORT_DATE_FORMAT = "yyyy-MM-dd HH-mm-ss";
+    private final String EXPORT_DELIMITER = " ";
+    private final TagService tagService;
 
     @Transactional
     public void exportDumpToFile(ExportProperties properties) throws IOException {
@@ -50,7 +49,7 @@ public class DataServiceImpl implements DataService {
     @Override
     public JsonDataDto importDataFromFile(String source) throws IOException {
         JsonDataDto jsonDataDto = importJsonFromFile(source);
-       return updateStorageData(jsonDataDto);
+        return updateStorageData(jsonDataDto);
     }
 
     private JsonDataDto importJsonFromFile(String source) throws IOException {
@@ -61,36 +60,39 @@ public class DataServiceImpl implements DataService {
     }
 
     private JsonDataDto updateStorageData(JsonDataDto jsonData) {
-        List<ReferenceImportDto> savedReference = null;
-        List<TagImportDto> savedTags = null;
-        List<EnvironmentImportDto> savedEnvironment = null;
-        List<BaseRelationImportDto> savedBaseRelation = null;
+        List<ReferenceImportDto> savedReference = referenceService.importReference(jsonData.getReferences());
+        List<TagImportDto> savedTags = tagService.importTag(jsonData.getTags());
+        List<EnvironmentImportDto> savedEnvironment = environmentService.importEnvironment(jsonData.getEnvironments());
+        List<RelationImportDto> savedBaseRelation = baseRelationService.importRelation(jsonData.getRelations());
 
-        if (!isEmpty(jsonData.getReferences()))
-            savedReference = referenceService.importReference(jsonData.getReferences());
-        if (!isEmpty(jsonData.getTags()))
-            savedTags = tagService.importTag(jsonData.getTags());
-        if(!isEmpty(jsonData.getEnvironments()))
-            savedEnvironment = environmentService.importEnvironment(jsonData.getEnvironments());
-//        if(!isEmpty(jsonData.getBaseRelations()))
-//            savedBaseRelation = baseRelationService.importBaseRelation(jsonData.getBaseRelations());
+        System.out.println(savedTags);
+        System.out.println(savedEnvironment);
+        System.out.println(savedBaseRelation);
+//        if (!isEmpty(jsonData.getReferences()))
+//            savedReference = referenceService.importReference(jsonData.getReferences());
+//        if (!isEmpty(jsonData.getTags()))
+//            savedTags = tagService.importTag(jsonData.getTags());
+//        if (!isEmpty(jsonData.getEnvironments()))
+//            savedEnvironment = environmentService.importEnvironment(jsonData.getEnvironments());
+//        if (!isEmpty(jsonData.getRelations()))
+//            savedBaseRelation = baseRelationService.importRelation(jsonData.getRelations());
 
         return JsonDataDto.builder()
                 .references(savedReference)
                 .tags(savedTags)
                 .environments(savedEnvironment)
-                .baseRelations(savedBaseRelation)
+                .relations(savedBaseRelation)
                 .build();
     }
 
     private String computeFileName(ExportProperties properties) {
         String date = LocalDateTime.now().format(DateTimeFormatter.ofPattern(EXPORT_DATE_FORMAT));
+        String formattedDate = EXPORT_DELIMITER.concat(EXPORT_DELIMITER)
+                .concat(date);
 
         return properties.getDestination()
                 .concat(properties.getFileName())
-                .concat(EXPORT_DELIMITER)
-                .concat(EXPORT_DELIMITER)
-                .concat(properties.getAppendDate().equals(TRUE) ? date : EMPTY)
+                .concat(properties.getAppendDate().equals(TRUE) ? formattedDate : EMPTY)
                 .concat(".txt");
     }
 

@@ -15,6 +15,6 @@ import java.util.List;
  * @author dprokofev
  */
 @Repository
-public interface ReferenceRepository extends JpaRepository<Reference, Long>, JpaSpecificationExecutor<Reference> {
+public interface ReferenceRepository extends JpaRepository<Reference, Long> {
     List<Reference> findAllByIdIn(List<Long> idList);
 }

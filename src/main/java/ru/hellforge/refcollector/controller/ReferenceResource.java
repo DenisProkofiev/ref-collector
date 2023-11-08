@@ -5,11 +5,15 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.hellforge.refcollector.dto.ReferenceDto;
-import ru.hellforge.refcollector.service.*;
+import ru.hellforge.refcollector.service.ReferenceService;
+import ru.hellforge.refcollector.service.ReferenceTagRelationService;
+import ru.hellforge.refcollector.service.RelationService;
 
 import static java.util.Objects.nonNull;
 import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.util.CollectionUtils.isEmpty;
+import static ru.hellforge.refcollector.enums.RelationType.REF_TAG;
+import static ru.hellforge.refcollector.util.BaseOperation.collectionNotEmpty;
 import static ru.hellforge.refcollector.util.BaseOperation.isIdValid;
 
 /**
@@ -24,28 +28,26 @@ public class ReferenceResource {
 
     private final ReferenceService referenceService;
     private final ReferenceTagRelationService referenceTagRelationService;
-    private final EnvironmentReferenceRelationService environmentReferenceRelationService;
-    private final BaseRelationService baseRelationService;
+    private final RelationService relationService;
 
     @GetMapping("/{referenceId}")
     public ResponseEntity<ReferenceDto> getReferenceById(@PathVariable(required = true) Long referenceId) {
-        return  ResponseEntity.status(OK).body(referenceService.getReferenceById(referenceId));
+        return ResponseEntity.status(OK).body(referenceService.getReferenceByIdList(referenceId));
     }
 
     @PostMapping
     public ResponseEntity<ReferenceDto> addReference(@RequestBody ReferenceDto referenceDto) {
         ReferenceDto savedReference = referenceService.saveReference(referenceDto);
 
-        if(isIdValid(referenceDto.getEnvironmentId())) {
-            environmentReferenceRelationService.addReferenceToEnvironment(referenceDto.getId(), referenceDto.getEnvironmentId());
-            baseRelationService.saveListRelationFromReferenceDto(savedReference);
+        if (isIdValid(referenceDto.getEnvironmentId()) || collectionNotEmpty(referenceDto.getTagIdList())) {
+            savedReference.setTagIdList(referenceDto.getTagIdList());
+            relationService.saveListRelationFromReferenceDto(savedReference);
         }
-
         if (nonNull(savedReference.getId()) && !isEmpty(referenceDto.getTagIdList())) {
             savedReference.setTagIdList(referenceDto.getTagIdList());
             referenceTagRelationService.addRelationFromReference(savedReference);
-        }
 
+        }
         return ResponseEntity.status(HttpStatus.CREATED).body(savedReference);
     }
 
@@ -58,6 +60,8 @@ public class ReferenceResource {
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<Void> deleteReference(@PathVariable(name = "id") Long id) {
         referenceService.deleteById(id);
+        relationService.delete(REF_TAG, id);
+
         return ResponseEntity.noContent().build();
     }
 

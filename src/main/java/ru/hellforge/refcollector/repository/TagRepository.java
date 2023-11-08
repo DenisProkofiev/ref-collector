@@ -13,5 +13,4 @@ import ru.hellforge.refcollector.model.entity.Tag;
 @Repository
 public interface TagRepository extends JpaRepository<Tag, Long> {
   List<Tag> findAllByIdIn(List<Long> tagIdList);
-
 }

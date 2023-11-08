@@ -7,12 +7,14 @@ import ru.hellforge.refcollector.mapper.ReferenceResponseMapper;
 import ru.hellforge.refcollector.model.ExportProperties;
 import ru.hellforge.refcollector.service.*;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import static java.lang.Boolean.TRUE;
 import static java.util.Objects.isNull;
-import static java.util.Objects.nonNull;
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toList;
 import static org.springframework.util.CollectionUtils.isEmpty;
@@ -30,13 +32,7 @@ public class AccumulatesResponseServiceImpl implements AccumulatesResponseServic
     private final TagService tagService;
     private final ReferenceTagRelationService referenceTagRelationService;
     private final ReferenceResponseMapper referenceResponseMapper;
-    private final EnvironmentReferenceRelationService environmentReferenceRelationService;
-    private final BaseRelationService baseRelationService;
-
-    @Override
-    public List<Long> getReferenceIdListByEnvironmentIdList(List<Long> environmentIdList) {
-        return environmentReferenceRelationService.getReferenceIdListByEnvironmentIdList(environmentIdList);
-    }
+    private final RelationService relationService;
 
     @Override
     public List<ReferenceDto> getReferenceDtoListByReferenceIdList(List<Long> referenceIdList, ExportProperties properties) {
@@ -45,29 +41,22 @@ public class AccumulatesResponseServiceImpl implements AccumulatesResponseServic
 
     @Override
     public List<ReferenceDto> getReferenceDtoListByReferenceIdList(List<Long> referenceIdList) {
-        return referenceService.getReferenceById(referenceIdList);
+        return referenceService.getReferenceByIdList(referenceIdList);
     }
 
     @Override
     public List<ReferenceResponseDto> getReferenceResponse(ReferenceFilterDto filter) {
-        List<Long> referenceEnvironmentsRelation = environmentReferenceRelationService.getAllRelations().stream()
-                .map(EnvironmentReferenceRelationDto::getReferenceId)
-                .collect(toList());
-
-        List<Long> environments = environmentService.getAllEnvironmentId();
-
-        List<Long>  referenceIdList = environmentReferenceRelationService.getReferenceIdListByEnvironmentIdList(environments);
-
-        List<ReferenceDto> allReferences = referenceService.getAllReference(filter);
-
-        List<ReferenceDto> references = !isEmpty(referenceIdList) ? allReferences.stream()
-                .filter(reference -> referenceIdList.contains(reference.getId()))
-                .collect(toList()) : allReferences;
+        List<ReferenceDto> references = referenceService.getAllReference(filter);
 
         List<ReferenceTagRelationDto> relations = referenceTagRelationService.getReferenceTagRelationByReferenceIdList(
                 references.stream()
                         .map(ReferenceDto::getId)
                         .collect(toList()));
+
+        List<RelationDto> relationList = relationService.getTagIdListByReferenceIdList(references.stream()
+                .map(ReferenceDto::getId)
+                .collect(toList()));
+        System.out.println(relationList);
 
         List<TagDto> tags = tagService.getTagDtoListByIdList(
                 relations.stream()
@@ -96,23 +85,21 @@ public class AccumulatesResponseServiceImpl implements AccumulatesResponseServic
 
     @Override
     public JsonDataDto getExportDataDto(ExportProperties properties) {
-        List<ReferenceImportDto> referenceImportDtos = TRUE.equals(properties.getEnvironment()) ? (referenceService.getAllImportReference()) : null;
-        List<TagImportDto> tagImportList = TRUE.equals(properties.getTag()) ? tagService.getAllImportTag() : null;
-        List<EnvironmentImportDto> environmentImportDtos = TRUE.equals(properties.getEnvironment()) ? environmentService.getAllImportEnvironment() : null;
-        List<BaseRelationImportDto> baseRelationImportDtos = TRUE.equals(properties.getRelation()) ? baseRelationService.getAllImportBaseRelation() : null;
+        List<ReferenceImportDto> referenceExportList = TRUE.equals(properties.getEnvironment()) ? (referenceService.getAllImportReference()) : null;
+        List<TagImportDto> tagExportList = TRUE.equals(properties.getTag()) ? tagService.getAllImportTag() : null;
+        List<EnvironmentImportDto> environmentExportList = TRUE.equals(properties.getEnvironment()) ? environmentService.getAllImportEnvironment() : null;
+        List<RelationImportDto> relationExportList = TRUE.equals(properties.getRelation()) ? relationService.getAllImportRelation() : null;
 
         return JsonDataDto.builder()
-                .references(referenceService.getAllImportReference())
-                .tags(tagService.getAllImportTag())
-                .environments(environmentService.getAllImportEnvironment())
-                .baseRelations(baseRelationService.getAllImportBaseRelation())
+                .references(referenceExportList)
+                .tags(tagExportList)
+                .environments(environmentExportList)
+                .relations(relationExportList)
                 .build();
     }
 
     private boolean getFilterPredicate(ReferenceFilterDto filter, Long id) {
         return isNull(filter) || isEmpty(filter.getTagsIdList()) || filter.getTagsIdList().contains(id);
     }
-
-
 
 }

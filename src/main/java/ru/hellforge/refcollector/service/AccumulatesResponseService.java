@@ -15,8 +15,6 @@ import java.util.List;
  */
 public interface AccumulatesResponseService {
 
-    List<Long> getReferenceIdListByEnvironmentIdList(List<Long> environmentIdList);
-
     List<ReferenceDto> getReferenceDtoListByReferenceIdList(List<Long> referenceIdList, ExportProperties properties);
 
     List<ReferenceDto> getReferenceDtoListByReferenceIdList(List<Long> referenceIdList);

@@ -15,5 +15,5 @@ public class JsonDataDto {
     private List<ReferenceImportDto> references;
     private List<TagImportDto> tags;
     private List<EnvironmentImportDto> environments;
-    private List<BaseRelationImportDto> baseRelations;
+    private List<RelationImportDto> relations;
 }

@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class BaseRelationDto {
+public class RelationDto {
     private Long id;
     private Long referenceId;
     private Long tagId;
