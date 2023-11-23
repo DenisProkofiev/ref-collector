@@ -94,6 +94,7 @@
         <td style="font-size: 14px; text-align: center; vertical-align: middle">
             <span th:text="${reference.id}"
                   th:value="${reference.id}"></span>
+<!--            <input type="text" id="referenceIdentifier">-->
         </td>
         <td style="font-size: 14px; text-align: center; vertical-align: middle">
             <span th:text="${reference.name}"></span>
@@ -144,7 +145,7 @@
                         class="btn btn-success"
                         data-toggle="modal"
                         data-target="#referenceDeleteDialog"
-                        th:data-deleteId="${reference.id}">
+                        th:data-referenceId="${reference.id}">
                     <i class="far fa-trash-alt"></i>
                 </button>
             </div>
@@ -460,7 +461,9 @@
                         </div>
                         <div class="custom-file">
                             <input type="file" class="custom-file-input" id="input-data-file"
-                                   aria-describedby="import-source-text">
+                                   aria-describedby="import-source-text"
+                                   placeholder="Import file"
+                                   accept="multipart/form-data">
                             <label class="custom-file-label" for="input-data-file">Choose file</label>
                         </div>
                     </div>
@@ -619,13 +622,6 @@
 </script>
 
 <script>
-    $('#referenceDeleteDialog').on('shown.bs.modal', function (event) {
-        let button = $(event.relatedTarget)
-        console.info(button.data('referenceId'))
-        let modal = button.data('referenceId')
-
-    })
-
     $('#delete-reference-button').click(function () {
         let modal = $('#referenceDeleteDialog')
         console.error(modal.find('#referenceId'))
