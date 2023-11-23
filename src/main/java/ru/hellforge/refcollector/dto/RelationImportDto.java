@@ -9,8 +9,10 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class EnvironmentReferenceRelationDto {
-    private Long id;
-    private Long environmentId;
+public class RelationImportDto {
     private Long referenceId;
+    private Long tagId;
+    private Long environmentId;
+    private String type;
 }
+

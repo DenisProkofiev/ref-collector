@@ -13,9 +13,11 @@ import ru.hellforge.refcollector.repository.TagRepository;
 import ru.hellforge.refcollector.service.TagService;
 
 import javax.persistence.EntityNotFoundException;
+import java.util.ArrayList;
 import java.util.List;
 
 import static java.util.stream.Collectors.toList;
+import static ru.hellforge.refcollector.util.BaseOperation.notEqual;
 
 /**
  * TagServiceImpl.
@@ -83,10 +85,16 @@ public class TagServiceImpl implements TagService {
 
     private List<TagImportDto> compareImportTag(List<TagImportDto> tagImportDtoList) {
         List<Tag> tags = tagRepository.findAll();
+        List<TagImportDto> newImportDtoList = new ArrayList<>();
 
-        return tagImportDtoList.stream()
-                .filter(tags::contains)
-                .collect(toList());
+        for (TagImportDto tagImportDto : newImportDtoList) {
+            for (Tag tag : tags) {
+                if(notEqual(tagImportDto.getName(), tag.getName()))
+                    newImportDtoList.add(tagImportDto);
+            }
+        }
+
+        return newImportDtoList;
     }
 
 }

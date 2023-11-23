@@ -11,8 +11,8 @@ import javax.persistence.*;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "base_relation")
-public class BaseRelation {
+@Table(name = "relation")
+public class Relation {
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)

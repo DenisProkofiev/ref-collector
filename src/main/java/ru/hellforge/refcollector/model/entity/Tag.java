@@ -14,7 +14,6 @@ import javax.persistence.*;
 @Entity
 @NoArgsConstructor
 public class Tag {
-
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)

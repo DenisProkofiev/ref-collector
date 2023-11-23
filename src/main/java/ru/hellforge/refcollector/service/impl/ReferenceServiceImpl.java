@@ -9,15 +9,17 @@ import ru.hellforge.refcollector.dto.ReferenceImportDto;
 import ru.hellforge.refcollector.mapper.ReferenceMapper;
 import ru.hellforge.refcollector.model.entity.Reference;
 import ru.hellforge.refcollector.repository.ReferenceRepository;
+import ru.hellforge.refcollector.service.RelationService;
 import ru.hellforge.refcollector.service.ReferenceService;
 import ru.hellforge.refcollector.service.ReferenceTagRelationService;
 
 import javax.persistence.EntityNotFoundException;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static java.util.Objects.isNull;
 import static java.util.stream.Collectors.toList;
+import static ru.hellforge.refcollector.util.BaseOperation.notEqual;
 
 /**
  * ReferenceServiceImpl.
@@ -30,45 +32,46 @@ public class ReferenceServiceImpl implements ReferenceService {
     private final ReferenceRepository referenceRepository;
     private final ReferenceMapper referenceMapper;
     private final ReferenceTagRelationService referenceTagRelationService;
+    private final RelationService baseRelationService;
 
     @Override
     public List<ReferenceDto> getAllReference(ReferenceFilterDto filter) {
         List<Reference> referenceDtoList = (isNull(filter) || isNull(filter.getTagsIdList())) ?
                 referenceRepository.findAll() :
-                referenceRepository.findAllById(referenceTagRelationService.getReferenceIdListByTagId(filter.getTagsIdList().get(0)));
+                referenceRepository.findAllById(
+                        //referenceTagRelationService.getReferenceIdListByTagId(filter.getTagsIdList().get(0));
+                        baseRelationService.getReferenceIdListByTagId(filter.getTagsIdList().get(0))
+                );
 
         return referenceMapper.referenceListToFullDtoList(referenceDtoList);
     }
 
     @Override
-    public ReferenceDto getReferenceById(Long referenceId) {
+    public ReferenceDto getReferenceByIdList(Long referenceId) {
         Reference referenceFromBD = referenceRepository.findById(referenceId).orElseThrow(EntityNotFoundException::new);
 
         return referenceMapper.entityToFullDto(referenceFromBD);
     }
 
     @Override
-    public List<ReferenceDto> getReferenceById(List<Long> referenceIdList) {
+    public List<ReferenceDto> getReferenceByIdList(List<Long> referenceIdList) {
         List<Reference> references = referenceRepository.findAllByIdIn(referenceIdList);
 
         return referenceMapper.referenceListToFullDtoList(references);
     }
 
     @Override
-    public List<ReferenceImportDto> getAllImportReference() {
-        return referenceMapper.entityListToImportDtoList(referenceRepository.findAll());
-    }
-
-    @Override
     @Transactional
     public ReferenceDto saveReference(ReferenceDto referenceDto) {
         Reference reference = referenceMapper.fullDtoToEntity(referenceDto);
-
-        referenceTagRelationService.addRelationFromReference(referenceDto);
-
         Reference savedReference = referenceRepository.save(reference);
 
         return referenceMapper.entityToFullDto(savedReference);
+    }
+
+    @Override
+    public List<ReferenceImportDto> getAllImportReference() {
+        return referenceMapper.entityListToImportDtoList(referenceRepository.findAll());
     }
 
     @Override
@@ -93,10 +96,17 @@ public class ReferenceServiceImpl implements ReferenceService {
 
     private List<ReferenceImportDto> compareImportReference(List<ReferenceImportDto> referenceImportList) {
         List<Reference> references = referenceRepository.findAll();
+        List<ReferenceImportDto> newReferences = new ArrayList<>();
 
-        return referenceImportList.stream()
-                .filter(references::contains)
-                .collect(toList());
+        for (ReferenceImportDto referenceImportDto : referenceImportList) {
+            for (Reference reference : references) {
+                if(notEqual(referenceImportDto.getUrl(),reference.getUrl())) {
+                    newReferences.add(referenceImportDto);
+                }
+            }
+        }
+
+        return newReferences;
     }
 
 }
