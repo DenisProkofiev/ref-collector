@@ -1,11 +1,15 @@
 package ru.hellforge.refcollector.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.hellforge.refcollector.dto.JsonDataDto;
 import ru.hellforge.refcollector.model.ExportProperties;
 import ru.hellforge.refcollector.service.DataService;
 
 import java.io.IOException;
+
+import static org.springframework.http.HttpStatus.ACCEPTED;
 
 @RestController
 @RequiredArgsConstructor
@@ -19,8 +23,8 @@ public class DataController {
     }
 
     @GetMapping("/import")
-    public void importDump(@RequestParam String source) throws IOException {
-        dataService.importDataFromFile(source);
+    public ResponseEntity<JsonDataDto> importDump(@RequestParam String source) throws IOException {
+        return ResponseEntity.status(ACCEPTED).body(dataService.importDataFromFile(source));
     }
 
 }

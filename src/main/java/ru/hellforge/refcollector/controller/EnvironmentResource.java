@@ -15,7 +15,6 @@ import static org.springframework.http.HttpStatus.OK;
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/environment")
 public class EnvironmentResource {
-
     private final EnvironmentService environmentService;
 
     @GetMapping

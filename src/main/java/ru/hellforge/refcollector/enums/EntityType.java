@@ -1,8 +1,7 @@
 package ru.hellforge.refcollector.enums;
 
-public enum TransferObjectType {
+public enum EntityType {
     REFERENCE,
     TAG,
-    ENVIRONMENT,
-    RELATION
+    ENVIRONMENT
 }
