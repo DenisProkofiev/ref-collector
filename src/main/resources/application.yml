@@ -1,9 +1,9 @@
 server:
-  port: 8090
+  port: ${port:8090}
 
 spring:
   application:
-    name: tagcollector
+    name: ref-collector
   datasource:
     url: jdbc:h2:file:./src/main/resources/db/data/rcdb.mv.db
     username: den
