@@ -187,7 +187,7 @@
         let tagId = button.data('tagid')
         if (tagId) {
             $.get({
-                url: '/api/v1/reference/' + tagId,
+                url: '/api/v1/tag/' + tagId,
                 success: (data) => {
                     let modal = $(this)
                     modal.find('#tag-id').val(data.id)
@@ -210,9 +210,10 @@
         if (modal.find('#tag-id').val()) {
             tag.id = modal.find('#tag-id').val()
         }
+        let id = tag.id
         $.ajax({
-            url: '/api/v1/tag',
-            type: 'POST',
+            url: '/api/v1/tag/edit/' + id,
+            type: 'PUT',
             data: JSON.stringify(tag),
             contentType: "application/json; charset=utf-8",
             dataType: "json",

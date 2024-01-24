@@ -17,16 +17,11 @@ import java.time.LocalDate;
 @Entity
 @Table(name = "references")
 @NoArgsConstructor
-public class Reference {
-    @Id
-    @Column(name = "id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
+public class Reference extends BaseEntity{
     @Column(name = "name")
     private String name;
 
-    @Column(name = "url")
+    @Column(name = "url", length = 1000)
     private String url;
 
     @Column(name = "description")

@@ -16,6 +16,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ReferenceImportDto {
+  @JsonProperty("objectCode")
+  private String objectCode;
   @JsonProperty("name")
   private String name;
   @JsonProperty("url")

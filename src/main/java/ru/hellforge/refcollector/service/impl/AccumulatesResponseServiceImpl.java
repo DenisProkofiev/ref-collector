@@ -14,10 +14,9 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import static java.lang.Boolean.TRUE;
-import static java.util.Objects.isNull;
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toList;
-import static org.springframework.util.CollectionUtils.isEmpty;
+import static ru.hellforge.refcollector.enums.RelationType.REF_TAG;
 
 /**
  * AccumulatesResponseServiceImpl.
@@ -30,7 +29,6 @@ public class AccumulatesResponseServiceImpl implements AccumulatesResponseServic
     private final EnvironmentService environmentService;
     private final ReferenceService referenceService;
     private final TagService tagService;
-    private final ReferenceTagRelationService referenceTagRelationService;
     private final ReferenceResponseMapper referenceResponseMapper;
     private final RelationService relationService;
 
@@ -48,39 +46,31 @@ public class AccumulatesResponseServiceImpl implements AccumulatesResponseServic
     public List<ReferenceResponseDto> getReferenceResponse(ReferenceFilterDto filter) {
         List<ReferenceDto> references = referenceService.getAllReference(filter);
 
-        List<ReferenceTagRelationDto> relations = referenceTagRelationService.getReferenceTagRelationByReferenceIdList(
-                references.stream()
-                        .map(ReferenceDto::getId)
-                        .collect(toList()));
-
-        List<RelationDto> relationList = relationService.getTagIdListByReferenceIdList(references.stream()
-                .map(ReferenceDto::getId)
+        List<RelationDto> relations = relationService.getTagIdListByReferenceIdList(references.stream()
+                .map(ReferenceDto::getObjectCode)
                 .collect(toList()));
-        System.out.println(relationList);
 
-        List<TagDto> tags = tagService.getTagDtoListByIdList(
+        List<TagDto> tags = tagService.getTagDtoListByObjectCodeList(
                 relations.stream()
-                        .map(ReferenceTagRelationDto::getTagId)
+                        .filter(relation -> REF_TAG.name().equals(relation.getType()))
+                        .map(RelationDto::getTagObjectCode)
+                        .distinct()
                         .collect(toList()));
 
-        Map<Long, List<Long>> map = relations.stream()
-                .collect(groupingBy(ReferenceTagRelationDto::getReferenceId,
-                        Collectors.mapping(ReferenceTagRelationDto::getTagId, toList())));
+        Map<String, List<String>> map = relations.stream()
+                .collect(groupingBy(RelationDto::getReferenceObjectCode,
+                        Collectors.mapping(RelationDto::getTagObjectCode, toList())));
 
-        Map<Long, List<TagDto>> tagMap = new HashMap<>();
+        Map<String, List<TagDto>> tagMap = new HashMap<>();
 
-        for (Map.Entry<Long, List<Long>> entry : map.entrySet()) {
+        for (Map.Entry<String, List<String>> entry : map.entrySet()) {
             tagMap.put(entry.getKey(), tags.stream()
-                    .filter(tag -> entry.getValue().contains(tag.getId())).collect(toList()));
+                    .filter(tag -> entry.getValue().contains(tag.getObjectCode())).collect(toList()));
         }
 
-        List<ReferenceResponseDto> referenceResponseList = new ArrayList<>();
-
-        for (ReferenceDto reference : references) {
-            referenceResponseList.add(referenceResponseMapper.toDto(reference, tagMap.get(reference.getId())));
-        }
-
-        return referenceResponseList;
+        return references.stream()
+                .map(reference -> referenceResponseMapper.toDto(reference, tagMap.get(reference.getObjectCode())))
+                .collect(toList());
     }
 
     @Override
@@ -96,10 +86,6 @@ public class AccumulatesResponseServiceImpl implements AccumulatesResponseServic
                 .environments(environmentExportList)
                 .relations(relationExportList)
                 .build();
-    }
-
-    private boolean getFilterPredicate(ReferenceFilterDto filter, Long id) {
-        return isNull(filter) || isEmpty(filter.getTagsIdList()) || filter.getTagsIdList().contains(id);
     }
 
 }

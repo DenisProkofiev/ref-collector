@@ -3,7 +3,8 @@ package ru.hellforge.refcollector.model.entity;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
 
 /**
  * Tag.
@@ -13,12 +14,7 @@ import javax.persistence.*;
 @Data
 @Entity
 @NoArgsConstructor
-public class Tag {
-    @Id
-    @Column(name = "id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
+public class Tag extends BaseEntity {
     @Column(name = "name")
     private String name;
 

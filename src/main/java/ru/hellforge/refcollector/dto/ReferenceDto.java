@@ -21,6 +21,8 @@ import lombok.NoArgsConstructor;
 public class ReferenceDto {
   @JsonProperty("id")
   private Long id;
+  @JsonProperty("objectCode")
+  private String objectCode;
   @JsonProperty("name")
   private String name;
   @JsonProperty("url")
@@ -30,7 +32,9 @@ public class ReferenceDto {
   @JsonProperty("createDate")
   private LocalDate createDate;
   @JsonProperty("tags")
-  private List<Long> tagIdList;
+  private List<String> tagObjectCodeList;
   @JsonProperty("environmentId")
   private Long environmentId;
+  @JsonProperty("environmentObjectCode")
+  private String environmentObjectCode;
 }

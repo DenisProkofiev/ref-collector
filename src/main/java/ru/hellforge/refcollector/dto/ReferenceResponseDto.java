@@ -21,6 +21,8 @@ import java.util.List;
 public class ReferenceResponseDto {
     @JsonProperty("id")
     private Long id;
+    @JsonProperty("objectCode")
+    private String objectCode;
     @JsonProperty("name")
     private String name;
     @JsonProperty("url")

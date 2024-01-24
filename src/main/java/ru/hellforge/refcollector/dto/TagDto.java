@@ -17,6 +17,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class TagDto {
+  @JsonProperty("objectCode")
+  private String objectCode;
   @JsonProperty("id")
   private Long id;
   @JsonProperty("name")

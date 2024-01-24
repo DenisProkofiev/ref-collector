@@ -11,15 +11,13 @@ import ru.hellforge.refcollector.model.entity.Reference;
 import ru.hellforge.refcollector.repository.ReferenceRepository;
 import ru.hellforge.refcollector.service.RelationService;
 import ru.hellforge.refcollector.service.ReferenceService;
-import ru.hellforge.refcollector.service.ReferenceTagRelationService;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
 import static java.util.Objects.isNull;
-import static java.util.stream.Collectors.toList;
-import static ru.hellforge.refcollector.util.BaseOperation.notEqual;
+import static ru.hellforge.refcollector.util.BaseOperationService.notEqual;
 
 /**
  * ReferenceServiceImpl.
@@ -31,16 +29,14 @@ import static ru.hellforge.refcollector.util.BaseOperation.notEqual;
 public class ReferenceServiceImpl implements ReferenceService {
     private final ReferenceRepository referenceRepository;
     private final ReferenceMapper referenceMapper;
-    private final ReferenceTagRelationService referenceTagRelationService;
-    private final RelationService baseRelationService;
+    private final RelationService relationService;
 
     @Override
     public List<ReferenceDto> getAllReference(ReferenceFilterDto filter) {
         List<Reference> referenceDtoList = (isNull(filter) || isNull(filter.getTagsIdList())) ?
                 referenceRepository.findAll() :
                 referenceRepository.findAllById(
-                        //referenceTagRelationService.getReferenceIdListByTagId(filter.getTagsIdList().get(0));
-                        baseRelationService.getReferenceIdListByTagId(filter.getTagsIdList().get(0))
+                        relationService.getReferenceIdListByTagId(filter.getTagsIdList().get(0))
                 );
 
         return referenceMapper.referenceListToFullDtoList(referenceDtoList);

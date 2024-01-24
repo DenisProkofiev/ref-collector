@@ -16,10 +16,11 @@ import java.util.List;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
+import static java.util.stream.Collectors.toList;
 import static ru.hellforge.refcollector.enums.EntityType.REFERENCE;
 import static ru.hellforge.refcollector.enums.RelationType.REF_ENV;
 import static ru.hellforge.refcollector.enums.RelationType.REF_TAG;
-import static ru.hellforge.refcollector.util.BaseOperation.collectionNotEmpty;
+import static ru.hellforge.refcollector.util.BaseOperationService.collectionNotEmpty;
 
 @Service
 @RequiredArgsConstructor
@@ -52,12 +53,14 @@ public class RelationServiceImpl implements RelationService {
 
     @Override
     public List<Long> getReferenceIdListByTagId(Long tagId) {
-        return relationRepository.findAllByTagIdAndType(tagId, REF_TAG.name());
+        return relationRepository.findAllByTagIdAndType(tagId, REF_TAG.name()).stream()
+                .map(Relation::getReferenceId)
+                .collect(toList());
     }
 
     @Override
-    public List<RelationDto> getTagIdListByReferenceIdList(List<Long> idList) {
-        return relationMapper.toDtoList(relationRepository.findAllByReferenceIdIn(idList));
+    public List<RelationDto> getTagIdListByReferenceIdList(List<String> objectCodeList) {
+        return relationMapper.toDtoList(relationRepository.findAllByReferenceObjectCodeIn(objectCodeList));
     }
 
     @Override
@@ -70,26 +73,26 @@ public class RelationServiceImpl implements RelationService {
     private List<Relation> getListRelationsFromReference(ReferenceDto referenceDto) {
         List<Relation> relations = new ArrayList<>();
 
-        if (collectionNotEmpty(referenceDto.getTagIdList())) {
-            for (Long tagId : referenceDto.getTagIdList()) {
-                relations.add(getRelation(referenceDto.getId(), tagId, REF_TAG));
+        if (collectionNotEmpty(referenceDto.getTagObjectCodeList())) {
+            for (String objectCode : referenceDto.getTagObjectCodeList()) {
+                relations.add(getRelation(referenceDto.getObjectCode(), objectCode, REF_TAG));
             }
         }
         if (nonNull(referenceDto.getEnvironmentId())) {
-            relations.add(getRelation(referenceDto.getId(), referenceDto.getEnvironmentId(), REF_ENV));
+            relations.add(getRelation(referenceDto.getObjectCode(), referenceDto.getEnvironmentObjectCode(), REF_ENV));
         }
 
         return relations;
     }
 
-    private Relation getRelation(Long referenceId, Long id, RelationType type) {
+    private Relation getRelation(String referenceObjectCode, String objectCode, RelationType type) {
         Relation relation = new Relation();
-        relation.setReferenceId(referenceId);
+        relation.setReferenceObjectCode(referenceObjectCode);
 
         if (type.equals(REF_TAG))
-            relation.setTagId(id);
+            relation.setTagObjectCode(objectCode);
         else if (type.equals(REF_ENV))
-            relation.setEnvironmentId(id);
+            relation.setEnvironmentObjectCode(objectCode);
 
         relation.setType(type.name());
 

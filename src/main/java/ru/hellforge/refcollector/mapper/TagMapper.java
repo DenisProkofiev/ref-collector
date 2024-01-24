@@ -1,12 +1,16 @@
 package ru.hellforge.refcollector.mapper;
 
-import static org.mapstruct.MappingConstants.ComponentModel.SPRING;
-
-import java.util.List;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.springframework.beans.factory.annotation.Autowired;
 import ru.hellforge.refcollector.dto.TagDto;
 import ru.hellforge.refcollector.dto.TagImportDto;
 import ru.hellforge.refcollector.model.entity.Tag;
+import ru.hellforge.refcollector.util.BaseOperationService;
+
+import java.util.List;
+
+import static org.mapstruct.MappingConstants.ComponentModel.SPRING;
 
 /**
  * TagMapper.
@@ -14,11 +18,27 @@ import ru.hellforge.refcollector.model.entity.Tag;
  * @author dprokofev
  */
 @Mapper(componentModel = SPRING)
-public interface TagMapper {
-    Tag toEntity(TagDto tagDto);
-    TagDto toDto(Tag tag);
-    List<TagDto> toDtoList(List<Tag> tagList);
-    List<Tag> toEntityList(List<TagDto> tagDtoList);
-    List<TagImportDto> entityListToImportDtoList(List<Tag> tagList);
-    List<Tag> importDtoListToEntityList(List<TagImportDto> tagImportDtoList);
+public abstract class TagMapper {
+    @Autowired
+    protected BaseOperationService operationService;
+
+    @Mapping(target = "objectCode", expression = "java(operationService.convertStringToUUID(tagDto.getObjectCode()))")
+    public abstract Tag toEntity(TagDto tagDto);
+
+    @Mapping(target = "objectCode", expression = "java(operationService.convertUUIDToString(tag.getObjectCode()))")
+    public abstract TagDto toDto(Tag tag);
+
+    public abstract List<TagDto> toDtoList(List<Tag> tagList);
+
+    public abstract List<Tag> toEntityList(List<TagDto> tagDtoList);
+
+    @Mapping(target = "objectCode", expression = "java(operationService.convertUUIDToString(tag.getObjectCode()))")
+    public abstract TagImportDto entityToImportDto(Tag tag);
+
+    public abstract List<TagImportDto> entityListToImportDtoList(List<Tag> tagList);
+
+    @Mapping(target = "objectCode", expression = "java(operationService.convertStringToUUID(tagImportDto.getObjectCode()))")
+    public abstract Tag importDtoToEntity(TagImportDto tagImportDto);
+
+    public abstract List<Tag> importDtoListToEntityList(List<TagImportDto> tagImportDtoList);
 }

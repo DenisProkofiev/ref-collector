@@ -18,7 +18,7 @@ public interface RelationService {
 
     List<Long> getReferenceIdListByTagId(Long tagId);
 
-    List<RelationDto> getTagIdListByReferenceIdList(List<Long> idList);
+    List<RelationDto> getTagIdListByReferenceIdList(List<String> objectCodeList);
 
     void delete(RelationType type, Long id);
 }

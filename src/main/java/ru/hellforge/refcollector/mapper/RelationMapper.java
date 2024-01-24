@@ -2,24 +2,34 @@ package ru.hellforge.refcollector.mapper;
 
 
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.springframework.beans.factory.annotation.Autowired;
 import ru.hellforge.refcollector.dto.RelationDto;
 import ru.hellforge.refcollector.dto.RelationImportDto;
 import ru.hellforge.refcollector.model.entity.Relation;
-
+import ru.hellforge.refcollector.util.BaseOperationService;
 
 import java.util.List;
 
 import static org.mapstruct.MappingConstants.ComponentModel.SPRING;
 
 @Mapper(componentModel = SPRING)
-public interface RelationMapper {
-    Relation toEntity(RelationDto relationDto);
+public abstract class RelationMapper {
+    @Autowired
+    protected BaseOperationService operationService;
 
-    RelationDto toDto(Relation relation);
+    @Mapping(target = "objectCode", expression = "java(operationService.convertStringToUUID(relationDto.getObjectCode()))")
+    public abstract Relation toEntity(RelationDto relationDto);
 
-    List<Relation> toEntityList(List<RelationDto> relationDtoList);
+    @Mapping(target = "objectCode", expression = "java(operationService.convertUUIDToString(relation.getObjectCode()))")
+    public abstract RelationDto toDto(Relation relation);
 
-    List<RelationDto> toDtoList(List<Relation> relationList);
+    public abstract List<Relation> toEntityList(List<RelationDto> relationDtoList);
 
-    List<RelationImportDto> entityListToImportDtoList(List<Relation> relations);
+    public abstract List<RelationDto> toDtoList(List<Relation> relationList);
+
+    @Mapping(target = "objectCode", expression = "java(operationService.convertUUIDToString(relation.getObjectCode()))")
+    public abstract RelationImportDto entityToImportDto(Relation relation);
+
+    public abstract List<RelationImportDto> entityListToImportDtoList(List<Relation> relations);
 }

@@ -11,6 +11,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class EnvironmentImportDto {
+    @JsonProperty("objectCode")
+    private String objectCode;
     @JsonProperty("name")
     private String name;
 }

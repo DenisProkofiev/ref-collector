@@ -8,8 +8,13 @@ import java.util.List;
 
 @Repository
 public interface RelationRepository extends JpaRepository<Relation, Long> {
-    List<Long> findAllByTagIdAndType(Long tagId, String type);
+    List<Relation> findAllByTagIdAndType(Long tagId, String type);
+
     List<Relation> findAllByReferenceIdIn(List<Long> referenceIdList);
+
+    List<Relation> findAllByReferenceObjectCodeIn(List<String> referenceObjectCodeList);
+
     void deleteAllByReferenceId(Long referenceId);
+
     void deleteAllByEnvironmentId(Long environmentId);
 }

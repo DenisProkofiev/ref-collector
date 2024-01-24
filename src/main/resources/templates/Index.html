@@ -2,7 +2,6 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <!--  <script type="text/javascript" src="static/reference-edit-modal-window.js" th:src="@{/reference-edit-modal-window.js}"></script>-->
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <!-- Bootstrap CSS -->
@@ -92,14 +91,15 @@
     </tr>
     <tr th:each="reference : ${references}" style="margin-top: 0px; margin-bottom: 0px">
         <td style="font-size: 14px; text-align: center; vertical-align: middle">
-            <span th:text="${reference.id}"
+            <span id="reference-id"
+                  th:text="${reference.id}"
                   th:value="${reference.id}"></span>
-<!--            <input type="text" id="referenceIdentifier">-->
         </td>
-        <td style="font-size: 14px; text-align: center; vertical-align: middle">
+        <td id="name"
+            style="font-size: 14px; text-align: center; vertical-align: middle">
             <span th:text="${reference.name}"></span>
         </td>
-        <td style="font-size: 12px; text-align: center; vertical-align: middle">
+        <td style="font-size: 12px; text-align: center; vertical-align: middle; width: 40%">
             <a id="urlId"
                th:value="${reference.url}"
                th:href="${reference.url}"
@@ -112,7 +112,7 @@
         </td>
         <td style="text-align: center; vertical-align: middle">
             <p th:each="tag : ${reference.tagList}"
-               th:value="${tag.name}"
+               th:value="${tag.objectCode}"
                th:text="${tag.name}"
                class="badge badge-secondary"
                style="font-size: 12px; text-align: center; vertical-align: middle;  margin-top: 0px; margin-bottom: 4px">
@@ -136,7 +136,8 @@
                         class="btn btn-success"
                         data-toggle="modal"
                         data-target="#referenceEditDialog"
-                        th:data-referenceId="${reference.id}">
+                        th:data-referenceId="${reference.id}"
+                        th:data-objectCode="${reference.objectCode}">
                     <i class="fas fa-edit"></i>
                 </button>
                 <button id="delete-reference"
@@ -195,6 +196,7 @@
                 <form>
                     <input type="hidden" id="reference-id">
                     <input type="hidden" id="reference-createDate">
+                    <input type="hidden" id="reference-objectCode">
                     <div class="form-group">
                         <label for="reference-name" class="col-form-label">Reference name</label>
                         <input type="text" class="form-control" id="reference-name">
@@ -212,13 +214,13 @@
                         <select class="form-control selectpicker" th:field="*{tags}" id="reference-tags">
                             <option value="">Nothing selected</option>
                             <option th:each="tag : ${tags}"
-                                    th:value="${tag.id}" th:text="${tag.name}">
+                                    th:value="${tag.objectCode}" th:text="${tag.name}">
                             </option>
                         </select>
                     </div>
                     <div class="form-group">
                         <label for="environment-name" class="col-form-label">Environments</label>
-                        <select class="form-control selectpicker" th:field="*{environments}" id="environment">
+                        <select class="form-control selectpicker" th:field="*{environments}" id="edit-environment">
                             <option value="null">Global environment</option>
                             <option th:each="environment : ${environments}"
                                     th:value="${environment.id}" th:text="${environment.name}">
@@ -248,6 +250,7 @@
             <div class="modal-body">
                 <form>
                     <input type="hidden" id="reference-id">
+                    <input type="hidden" id="reference-objectCode">
                     <div class="form-group">
                         <label for="reference-name" class="col-form-label">Name</label>
                         <input type="text" class="form-control" id="reference-name">
@@ -265,7 +268,7 @@
                         <select class="form-control selectpicker" th:field="*{tags}" id="reference-tags">
                             <option value="null">Nothing selected</option>
                             <option th:each="tag : ${tags}"
-                                    th:value="${tag.id}" th:text="${tag.name}">
+                                    th:value="${tag.objectCode}" th:text="${tag.name}">
                             </option>
                         </select>
                     </div>
@@ -300,11 +303,11 @@
             </div>
             <div class="modal-body">
                 <form>
-                    <input type="hidden" id="referenceId">
+                    <input type="hidden" id="reference-id">
                 </form>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button id="delete-reference-button" class="btn btn-primary" role="button"
+                    <button id="delete-reference-button" data-id="${reference-id}" class="btn btn-primary" role="button"
                             style="background: crimson">Delete
                     </button>
                 </div>
@@ -449,9 +452,10 @@
         <div class="modal-content" style="align-self: center; ">
             <div class="modal-header">
                 <h5 class="modal-title" id="importDataDialogLabel">Import data</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+                <!--                <button type="button" class="close" data-dismiss="modal" aria-label="Close">-->
+                <!--                    <span aria-hidden="true">&times;</span>-->
+                <!--                </button>-->
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
             </div>
             <div class="modal-body">
                 <form>
@@ -461,9 +465,10 @@
                         </div>
                         <div class="custom-file">
                             <input type="file" class="custom-file-input" id="input-data-file"
+                                   name="content"
                                    aria-describedby="import-source-text"
                                    placeholder="Import file"
-                                   accept="multipart/form-data">
+                                   accept="application/json">
                             <label class="custom-file-label" for="input-data-file">Choose file</label>
                         </div>
                     </div>
@@ -499,6 +504,45 @@
         input.select();
         document.execCommand('copy');
     }
+</script>
+
+<script>
+    $('#referenceDeleteDialog').on('shown.bs.modal', function (event) {
+        let button = $(event.relatedTarget)
+        let referenceId = button.data('referenceid')
+        if (referenceId) {
+            $.get({
+                url: '/api/v1/reference/' + referenceId,
+                success: (data) => {
+                    let modal = $(this)
+                    modal.find('#reference-id').val(data.id)
+                },
+                error: (err) => {
+                    alert(err);
+                }
+            });
+        }
+    })
+
+    $('#delete-reference-button').click(function () {
+        let modal = $('#referenceDeleteDialog')
+        let reference = {
+            id: modal.find('#reference-id').val()
+        };
+        let id = reference.id
+        $.ajax({
+            url: '/api/v1/reference/delete/' + id,
+            type: 'DELETE',
+            success: function (response) {
+                location.reload()
+            },
+            error: (err) => {
+                alert(err);
+            }
+        })
+
+        modal.modal('hide');
+    });
 </script>
 
 <script>
@@ -545,6 +589,7 @@
                     modal.find('#reference-createDate').val(data.createDate)
                     modal.find('#reference-description').val(data.description)
                     modal.find('#reference-tags').val(data.tags)
+                    modal.find('#reference-objectCode').val(data.objectCode)
                 },
                 error: (err) => {
                     alert(err);
@@ -560,6 +605,7 @@
             url: modal.find('#reference-url').val(),
             createDate: modal.find('#reference-createDate').val(),
             description: modal.find('#reference-description').val(),
+            objectCode: modal.find('#reference-objectCode').val(),
             tags: [
                 modal.find('#reference-tags').val()
             ],
@@ -598,7 +644,6 @@
             description: modal.find('#reference-description').val(),
             tags: tags,
         };
-
         if (modal.find('#reference-id').val()) {
             reference.id = modal.find('#reference-id').val()
         }
@@ -617,26 +662,6 @@
             }
         })
 
-        modal.modal('hide');
-    });
-</script>
-
-<script>
-    $('#delete-reference-button').click(function () {
-        let modal = $('#referenceDeleteDialog')
-        console.error(modal.find('#referenceId'))
-        let id = modal.find('#referenceId').val()
-
-        $.ajax({
-            url: '/api/v1/reference/delete/' + id,
-            type: 'DELETE',
-            success: function (response) {
-
-            },
-            error: (err) => {
-                alert(err);
-            }
-        })
         modal.modal('hide');
     });
 </script>
@@ -680,14 +705,11 @@
     });
 </script>
 <script>
-    $('#import-data-button').click(function () {
-        let modal = $('#importDataDialog')
-        let source = {
-            destination: modal.find('#input-data-file').val()
-        };
+    $('#import-data-button').click(function (data) {
         $.ajax({
-            url: '/api/v1/import' + source,
+            url: '/api/v1/import',
             type: 'POST',
+            data: JSON.stringify(data),
             contentType: "application/json; charset=utf-8",
             dataType: "json",
             success: () => {

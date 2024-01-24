@@ -2,14 +2,13 @@ package ru.hellforge.refcollector.config;
 
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.jdbc.DataSourceBuilder;
-import org.springframework.boot.web.server.ConfigurableWebServerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import javax.sql.DataSource;
 
 import static java.lang.Integer.parseInt;
-import static ru.hellforge.refcollector.util.BaseOperation.isArgumentExist;
+import static ru.hellforge.refcollector.util.BaseOperationService.isArgumentExist;
 
 @Configuration
 public class ApplicationStartConfiguration {

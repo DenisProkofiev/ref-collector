@@ -1,11 +1,12 @@
 package ru.hellforge.refcollector.model;
 
-import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import ru.hellforge.refcollector.dto.TagDto;
+
+import java.util.List;
 
 /**
  * FilterReference.
@@ -17,7 +18,7 @@ import ru.hellforge.refcollector.dto.TagDto;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ReferenceFilter {
-  private List<Long> tagsIdList;
-  private List<TagDto> tags;
+    private List<Long> tagsIdList;
+    private List<TagDto> tags;
 
 }

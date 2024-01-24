@@ -12,11 +12,15 @@ import javax.persistence.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "relation")
-public class Relation {
-    @Id
-    @Column(name = "id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class Relation extends BaseEntity{
+    @Column(name = "reference_object_code")
+    private String referenceObjectCode;
+
+    @Column(name = "tag_object_code")
+    private String tagObjectCode;
+
+    @Column(name = "environment_object_code")
+    private String environmentObjectCode;
 
     @Column(name = "reference_id")
     private Long referenceId;
