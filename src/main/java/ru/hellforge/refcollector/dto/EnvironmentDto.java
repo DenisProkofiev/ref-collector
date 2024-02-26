@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.UUID;
+
 @Data
 @Builder
 @NoArgsConstructor
@@ -13,7 +15,8 @@ import lombok.NoArgsConstructor;
 public class EnvironmentDto {
     @JsonProperty("id")
     private Long id;
+    @JsonProperty("objectCode")
+    private UUID objectCode;
     @JsonProperty("name")
     private String name;
-
 }

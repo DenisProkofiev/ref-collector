@@ -7,17 +7,17 @@ import ru.hellforge.refcollector.mapper.ReferenceResponseMapper;
 import ru.hellforge.refcollector.model.ExportProperties;
 import ru.hellforge.refcollector.service.*;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static java.lang.Boolean.TRUE;
-import static java.util.Objects.isNull;
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toList;
-import static org.springframework.util.CollectionUtils.isEmpty;
+import static ru.hellforge.refcollector.enums.RelationType.REF_TAG;
+import static ru.hellforge.refcollector.util.BaseOperationService.isObjectEmpty;
 
 /**
  * AccumulatesResponseServiceImpl.
@@ -30,7 +30,6 @@ public class AccumulatesResponseServiceImpl implements AccumulatesResponseServic
     private final EnvironmentService environmentService;
     private final ReferenceService referenceService;
     private final TagService tagService;
-    private final ReferenceTagRelationService referenceTagRelationService;
     private final ReferenceResponseMapper referenceResponseMapper;
     private final RelationService relationService;
 
@@ -46,41 +45,53 @@ public class AccumulatesResponseServiceImpl implements AccumulatesResponseServic
 
     @Override
     public List<ReferenceResponseDto> getReferenceResponse(ReferenceFilterDto filter) {
-        List<ReferenceDto> references = referenceService.getAllReference(filter);
+        List<ReferenceDto> references = null;
+        List<RelationDto> relations = null;
 
-        List<ReferenceTagRelationDto> relations = referenceTagRelationService.getReferenceTagRelationByReferenceIdList(
-                references.stream()
-                        .map(ReferenceDto::getId)
-                        .collect(toList()));
+        if (!isObjectEmpty(filter)) {
+            relations = relationService.getFiltredReferenceIdList(filter);
 
-        List<RelationDto> relationList = relationService.getTagIdListByReferenceIdList(references.stream()
-                .map(ReferenceDto::getId)
-                .collect(toList()));
-        System.out.println(relationList);
+            references = referenceService.getReferenceByIdList(relations.stream()
+                    .map(RelationDto::getReferenceId)
+                    .collect(toList()));
 
-        List<TagDto> tags = tagService.getTagDtoListByIdList(
+        } else {
+            references = referenceService.getAllReference(filter);
+
+            relations = relationService.getRelationListFromReferenceObjectCodeList(
+                    references.stream()
+                            .map(ReferenceDto::getObjectCode)
+                            .collect(toList())
+            );
+        }
+
+        List<TagDto> tags = tagService.getTagDtoListByObjectCodeList(
                 relations.stream()
-                        .map(ReferenceTagRelationDto::getTagId)
+                        .filter(relation -> REF_TAG.name().equals(relation.getType()))
+                        .map(RelationDto::getTagObjectCode)
+                        .distinct()
                         .collect(toList()));
 
-        Map<Long, List<Long>> map = relations.stream()
-                .collect(groupingBy(ReferenceTagRelationDto::getReferenceId,
-                        Collectors.mapping(ReferenceTagRelationDto::getTagId, toList())));
+        Map<UUID, List<UUID>> map = relations.stream()
+                .collect(groupingBy(RelationDto::getReferenceObjectCode,
+                        Collectors.mapping(RelationDto::getTagObjectCode, toList())));
 
-        Map<Long, List<TagDto>> tagMap = new HashMap<>();
+        Map<UUID, List<TagDto>> tagMap = new HashMap<>();
 
-        for (Map.Entry<Long, List<Long>> entry : map.entrySet()) {
+        for (Map.Entry<UUID, List<UUID>> entry : map.entrySet()) {
             tagMap.put(entry.getKey(), tags.stream()
-                    .filter(tag -> entry.getValue().contains(tag.getId())).collect(toList()));
+                    .filter(tag -> entry.getValue().contains(tag.getObjectCode())).collect(toList()));
         }
 
-        List<ReferenceResponseDto> referenceResponseList = new ArrayList<>();
+        return references.stream()
+                .map(reference -> referenceResponseMapper.toDto(reference, tagMap.get(reference.getObjectCode())))
+                .collect(toList());
+    }
 
-        for (ReferenceDto reference : references) {
-            referenceResponseList.add(referenceResponseMapper.toDto(reference, tagMap.get(reference.getId())));
-        }
-
-        return referenceResponseList;
+    public List<Long> getFilterResponse(ReferenceFilterDto filter) {
+        return relationService.getFiltredReferenceIdList(filter).stream()
+                .map(RelationDto::getId)
+                .collect(toList());
     }
 
     @Override
@@ -96,10 +107,6 @@ public class AccumulatesResponseServiceImpl implements AccumulatesResponseServic
                 .environments(environmentExportList)
                 .relations(relationExportList)
                 .build();
-    }
-
-    private boolean getFilterPredicate(ReferenceFilterDto filter, Long id) {
-        return isNull(filter) || isEmpty(filter.getTagsIdList()) || filter.getTagsIdList().contains(id);
     }
 
 }

@@ -5,7 +5,9 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 import java.time.LocalDate;
 
 /**
@@ -17,16 +19,11 @@ import java.time.LocalDate;
 @Entity
 @Table(name = "references")
 @NoArgsConstructor
-public class Reference {
-    @Id
-    @Column(name = "id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
+public class Reference extends BaseEntity {
     @Column(name = "name")
     private String name;
 
-    @Column(name = "url")
+    @Column(name = "url", length = 1000)
     private String url;
 
     @Column(name = "description")

@@ -9,17 +9,19 @@ import ru.hellforge.refcollector.dto.ReferenceImportDto;
 import ru.hellforge.refcollector.mapper.ReferenceMapper;
 import ru.hellforge.refcollector.model.entity.Reference;
 import ru.hellforge.refcollector.repository.ReferenceRepository;
-import ru.hellforge.refcollector.service.RelationService;
 import ru.hellforge.refcollector.service.ReferenceService;
-import ru.hellforge.refcollector.service.ReferenceTagRelationService;
+import ru.hellforge.refcollector.service.RelationService;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.UUID;
 
 import static java.util.Objects.isNull;
-import static java.util.stream.Collectors.toList;
-import static ru.hellforge.refcollector.util.BaseOperation.notEqual;
+import static ru.hellforge.refcollector.enums.EntityType.REFERENCE;
+import static ru.hellforge.refcollector.enums.RelationType.REF_TAG;
+import static ru.hellforge.refcollector.util.BaseOperationService.notEqual;
 
 /**
  * ReferenceServiceImpl.
@@ -31,25 +33,32 @@ import static ru.hellforge.refcollector.util.BaseOperation.notEqual;
 public class ReferenceServiceImpl implements ReferenceService {
     private final ReferenceRepository referenceRepository;
     private final ReferenceMapper referenceMapper;
-    private final ReferenceTagRelationService referenceTagRelationService;
-    private final RelationService baseRelationService;
+    private final RelationService relationService;
 
     @Override
     public List<ReferenceDto> getAllReference(ReferenceFilterDto filter) {
         List<Reference> referenceDtoList = (isNull(filter) || isNull(filter.getTagsIdList())) ?
                 referenceRepository.findAll() :
                 referenceRepository.findAllById(
-                        //referenceTagRelationService.getReferenceIdListByTagId(filter.getTagsIdList().get(0));
-                        baseRelationService.getReferenceIdListByTagId(filter.getTagsIdList().get(0))
+                        relationService.getReferenceIdListByTagId(filter.getTagsIdList().get(0))
                 );
 
         return referenceMapper.referenceListToFullDtoList(referenceDtoList);
     }
 
     @Override
-    public ReferenceDto getReferenceByIdList(Long referenceId) {
+    public ReferenceDto getReferenceById(Long referenceId) {
         Reference referenceFromBD = referenceRepository.findById(referenceId).orElseThrow(EntityNotFoundException::new);
 
+        return referenceMapper.entityToFullDto(referenceFromBD);
+    }
+
+    @Override
+    public ReferenceDto getReferenceByObjectCode(UUID objectCode) {
+        Reference referenceFromBD = referenceRepository.findAll().stream()
+                .filter(r -> Objects.equals(objectCode.toString(), r.getObjectCode()))
+                .findFirst()
+                .orElseThrow(EntityNotFoundException::new);
         return referenceMapper.entityToFullDto(referenceFromBD);
     }
 
@@ -94,13 +103,19 @@ public class ReferenceServiceImpl implements ReferenceService {
         referenceRepository.deleteById(id);
     }
 
+    @Override
+    public void deleteByObjectCode(UUID objectCode) {
+        referenceRepository.deleteByObjectCode(objectCode.toString());
+        relationService.deleteByTypeAndObjectCode(REF_TAG, REFERENCE, objectCode);
+    }
+
     private List<ReferenceImportDto> compareImportReference(List<ReferenceImportDto> referenceImportList) {
         List<Reference> references = referenceRepository.findAll();
         List<ReferenceImportDto> newReferences = new ArrayList<>();
 
         for (ReferenceImportDto referenceImportDto : referenceImportList) {
             for (Reference reference : references) {
-                if(notEqual(referenceImportDto.getUrl(),reference.getUrl())) {
+                if (notEqual(referenceImportDto.getUrl(), reference.getUrl())) {
                     newReferences.add(referenceImportDto);
                 }
             }

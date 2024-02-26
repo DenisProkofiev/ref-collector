@@ -3,9 +3,9 @@ package ru.hellforge.refcollector.service;
 import ru.hellforge.refcollector.dto.ReferenceDto;
 import ru.hellforge.refcollector.dto.ReferenceFilterDto;
 import ru.hellforge.refcollector.dto.ReferenceImportDto;
-import ru.hellforge.refcollector.enums.EntityType;
 
 import java.util.List;
+import java.util.UUID;
 
 /**
  * ReferenceService.
@@ -23,10 +23,13 @@ public interface ReferenceService {
     List<ReferenceImportDto> importReference(List<ReferenceImportDto> referenceDtoList);
 
     void deleteById(Long id);
+    void deleteByObjectCode(UUID objectCode);
 
-    ReferenceDto getReferenceByIdList(Long referenceId);
+    ReferenceDto getReferenceById(Long referenceId);
 
     List<ReferenceDto> getReferenceByIdList(List<Long> referenceIdList);
 
     List<ReferenceImportDto> getAllImportReference();
+
+    ReferenceDto getReferenceByObjectCode(UUID objectCode);
 }

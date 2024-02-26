@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static java.util.stream.Collectors.toList;
-import static ru.hellforge.refcollector.util.BaseOperation.notEqual;
+import static ru.hellforge.refcollector.util.BaseOperationService.notEqual;
 
 @Service
 @RequiredArgsConstructor

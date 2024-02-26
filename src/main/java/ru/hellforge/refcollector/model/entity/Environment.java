@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * FavoriteLink.
@@ -16,13 +17,7 @@ import java.util.List;
 @Entity
 @NoArgsConstructor
 @Table(name = "environment")
-public class Environment {
-    @Id
-    @Column(name = "id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
+public class Environment extends BaseEntity{
     @Column(name = "name")
     private String name;
-
 }

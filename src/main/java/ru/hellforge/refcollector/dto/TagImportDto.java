@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.UUID;
+
 /**
  * TagDto.
  *
@@ -16,6 +18,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class TagImportDto {
+  @JsonProperty("objectCode")
+  private UUID objectCode;
   @JsonProperty("name")
   private String name;
   @JsonProperty("description")

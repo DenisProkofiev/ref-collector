@@ -20,18 +20,12 @@ import ru.hellforge.refcollector.service.TagService;
 @RequiredArgsConstructor
 public class TagController {
 
-  private final TagService tagService;
+    private final TagService tagService;
 
-  @GetMapping
-  public String getAllTag(@RequestParam(required = false) String filter, Model model) {
-    model.addAttribute("tags", tagService.getAllTag(TagFilter.builder().name(filter).build()));
-    return "tag/tags";
-  }
-
-  @GetMapping("/delete/{id}")
-  public String deleteReference(@PathVariable(name = "id") Long id) {
-    tagService.deleteById(id);
-    return "redirect:/tag/tags";
-  }
+    @GetMapping
+    public String getAllTag(@RequestParam(required = false) String filter, Model model) {
+        model.addAttribute("tags", tagService.getAllTag(TagFilter.builder().name(filter).build()));
+        return "tag/tags";
+    }
 
 }
