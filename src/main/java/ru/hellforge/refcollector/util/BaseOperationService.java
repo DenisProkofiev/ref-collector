@@ -2,11 +2,7 @@ package ru.hellforge.refcollector.util;
 
 import org.springframework.stereotype.Component;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
-import java.util.stream.Collectors;
+import java.util.*;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
@@ -40,6 +36,12 @@ public class BaseOperationService {
         return isNull(objectCode) ? OBJECT_CODE_NOT_CREATED : objectCode.toString();
     }
 
+    public static List<String> convertListUUIDToStringList(List<UUID> uuids) {
+        return uuids.stream()
+                .map(BaseOperationService::convertUUIDToString)
+                .collect(toList());
+    }
+
     public static UUID convertStringToUUID(String objectCode) {
         return isNull(objectCode) ? null : UUID.fromString(objectCode);
     }
@@ -48,5 +50,20 @@ public class BaseOperationService {
         return objectCodeList.stream()
                 .map(BaseOperationService::convertStringToUUID)
                 .collect(toList());
+    }
+
+    public static boolean isObjectEmpty(Object object) {
+        return isNull(object) ||
+               Arrays.stream(object.getClass()
+                               .getDeclaredFields())
+                       .peek(field -> field.setAccessible(true))
+                       .map(field -> {
+                           try {
+                               return field.get(object);
+                           } catch (IllegalAccessException e) {
+                               throw new RuntimeException(e);
+                           }
+                       })
+                       .allMatch(Objects::isNull);
     }
 }

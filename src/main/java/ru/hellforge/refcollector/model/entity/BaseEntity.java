@@ -1,6 +1,8 @@
 package ru.hellforge.refcollector.model.entity;
 
+import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
+import org.hibernate.id.UUIDGenerator;
 
 import javax.persistence.*;
 import java.util.UUID;

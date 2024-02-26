@@ -2,6 +2,8 @@ package ru.hellforge.refcollector.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
+import java.util.UUID;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -18,7 +20,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class TagDto {
   @JsonProperty("objectCode")
-  private String objectCode;
+  private UUID objectCode;
   @JsonProperty("id")
   private Long id;
   @JsonProperty("name")

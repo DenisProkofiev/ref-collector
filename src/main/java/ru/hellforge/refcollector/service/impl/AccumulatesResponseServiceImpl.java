@@ -7,16 +7,17 @@ import ru.hellforge.refcollector.mapper.ReferenceResponseMapper;
 import ru.hellforge.refcollector.model.ExportProperties;
 import ru.hellforge.refcollector.service.*;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static java.lang.Boolean.TRUE;
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toList;
 import static ru.hellforge.refcollector.enums.RelationType.REF_TAG;
+import static ru.hellforge.refcollector.util.BaseOperationService.isObjectEmpty;
 
 /**
  * AccumulatesResponseServiceImpl.
@@ -44,11 +45,25 @@ public class AccumulatesResponseServiceImpl implements AccumulatesResponseServic
 
     @Override
     public List<ReferenceResponseDto> getReferenceResponse(ReferenceFilterDto filter) {
-        List<ReferenceDto> references = referenceService.getAllReference(filter);
+        List<ReferenceDto> references = null;
+        List<RelationDto> relations = null;
 
-        List<RelationDto> relations = relationService.getTagIdListByReferenceIdList(references.stream()
-                .map(ReferenceDto::getObjectCode)
-                .collect(toList()));
+        if (!isObjectEmpty(filter)) {
+            relations = relationService.getFiltredReferenceIdList(filter);
+
+            references = referenceService.getReferenceByIdList(relations.stream()
+                    .map(RelationDto::getReferenceId)
+                    .collect(toList()));
+
+        } else {
+            references = referenceService.getAllReference(filter);
+
+            relations = relationService.getRelationListFromReferenceObjectCodeList(
+                    references.stream()
+                            .map(ReferenceDto::getObjectCode)
+                            .collect(toList())
+            );
+        }
 
         List<TagDto> tags = tagService.getTagDtoListByObjectCodeList(
                 relations.stream()
@@ -57,19 +72,25 @@ public class AccumulatesResponseServiceImpl implements AccumulatesResponseServic
                         .distinct()
                         .collect(toList()));
 
-        Map<String, List<String>> map = relations.stream()
+        Map<UUID, List<UUID>> map = relations.stream()
                 .collect(groupingBy(RelationDto::getReferenceObjectCode,
                         Collectors.mapping(RelationDto::getTagObjectCode, toList())));
 
-        Map<String, List<TagDto>> tagMap = new HashMap<>();
+        Map<UUID, List<TagDto>> tagMap = new HashMap<>();
 
-        for (Map.Entry<String, List<String>> entry : map.entrySet()) {
+        for (Map.Entry<UUID, List<UUID>> entry : map.entrySet()) {
             tagMap.put(entry.getKey(), tags.stream()
                     .filter(tag -> entry.getValue().contains(tag.getObjectCode())).collect(toList()));
         }
 
         return references.stream()
                 .map(reference -> referenceResponseMapper.toDto(reference, tagMap.get(reference.getObjectCode())))
+                .collect(toList());
+    }
+
+    public List<Long> getFilterResponse(ReferenceFilterDto filter) {
+        return relationService.getFiltredReferenceIdList(filter).stream()
+                .map(RelationDto::getId)
                 .collect(toList());
     }
 

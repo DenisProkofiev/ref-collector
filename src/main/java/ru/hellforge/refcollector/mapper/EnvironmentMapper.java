@@ -17,17 +17,17 @@ public abstract class EnvironmentMapper {
     @Autowired
     protected BaseOperationService operationService;
 
-    @Mapping(target = "objectCode", expression = "java(operationService.convertStringToUUID(environmentDto.getObjectCode()))")
+  //  @Mapping(target = "objectCode", expression = "java(operationService.convertStringToUUID(environmentDto.getObjectCode()))")
     public abstract Environment toEntity(EnvironmentDto environmentDto);
 
-    @Mapping(target = "objectCode", expression = "java(operationService.convertUUIDToString(environment.getObjectCode()))")
+  //  @Mapping(target = "objectCode", expression = "java(operationService.convertUUIDToString(environment.getObjectCode()))")
     public abstract EnvironmentDto toDto(Environment environment);
 
     public abstract List<EnvironmentDto> toDtoList(List<Environment> environmentList);
 
     public abstract List<EnvironmentImportDto> entityListToImportDtoList(List<Environment> all);
 
-    @Mapping(target = "objectCode", expression = "java(operationService.convertStringToUUID(environmentImport.getObjectCode()))")
+   // @Mapping(target = "objectCode", expression = "java(operationService.convertStringToUUID(environmentImport.getObjectCode()))")
     public abstract Environment importDtoToEntity(EnvironmentImportDto environmentImport);
 
     public abstract List<Environment> importDtoListToEntityList(List<EnvironmentImportDto> newEnvironmentImports);

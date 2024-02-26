@@ -14,5 +14,7 @@ import ru.hellforge.refcollector.model.entity.Tag;
  */
 @Repository
 public interface TagRepository extends JpaRepository<Tag, Long> {
-  List<Tag> findAllByObjectCodeIn(List<UUID> tagObjectCodeList);
+  List<Tag> findAllByObjectCodeIn(List<String> tagObjectCodeList);
+
+    void deleteByObjectCode(String objectCode);
 }

@@ -1,22 +1,30 @@
 package ru.hellforge.refcollector.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.hellforge.refcollector.dto.TagDto;
 import ru.hellforge.refcollector.dto.TagFilter;
 import ru.hellforge.refcollector.dto.TagImportDto;
 import ru.hellforge.refcollector.mapper.TagMapper;
 import ru.hellforge.refcollector.model.entity.Tag;
 import ru.hellforge.refcollector.repository.TagRepository;
+import ru.hellforge.refcollector.service.RelationService;
 import ru.hellforge.refcollector.service.TagService;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.function.Predicate;
 
 import static java.util.Objects.nonNull;
 import static java.util.stream.Collectors.toList;
+import static org.springframework.data.domain.Sort.Direction.ASC;
+import static ru.hellforge.refcollector.enums.EntityType.TAG;
+import static ru.hellforge.refcollector.enums.RelationType.REF_TAG;
+import static ru.hellforge.refcollector.util.BaseOperationService.convertStringToUUID;
 import static ru.hellforge.refcollector.util.BaseOperationService.notEqual;
 import static ru.hellforge.refcollector.util.Constants.OBJECT_CODE_NOT_CREATED;
 
@@ -28,13 +36,14 @@ import static ru.hellforge.refcollector.util.Constants.OBJECT_CODE_NOT_CREATED;
 @Service
 @RequiredArgsConstructor
 public class TagServiceImpl implements TagService {
-
+    private final RelationService relationService;
     private final TagRepository tagRepository;
     private final TagMapper tagMapper;
+    private final Sort tagSorting = Sort.by(ASC, ("name"));
 
     @Override
     public List<TagDto> getAllTag(TagFilter filter) {
-        return tagMapper.toDtoList(tagRepository.findAll());
+        return tagMapper.toDtoList(tagRepository.findAll(tagSorting));
     }
 
     @Override
@@ -60,8 +69,8 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
-    public List<TagDto> getTagDtoListByObjectCodeList(List<String> tagObjectCodeList) {
-        List<Tag> tags = tagRepository.findAll().stream()
+    public List<TagDto> getTagDtoListByObjectCodeList(List<UUID> tagObjectCodeList) {
+        List<Tag> tags = tagRepository.findAll(tagSorting).stream()
                 .filter(new Predicate<Tag>() {
                     @Override
                     public boolean test(Tag tag) {
@@ -84,8 +93,15 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
+    @Transactional
+    public void deleteByObjectCode(UUID objectCode) {
+        tagRepository.deleteByObjectCode(objectCode.toString());
+        relationService.deleteByTypeAndObjectCode(REF_TAG, TAG, objectCode);
+    }
+
+    @Override
     public List<TagImportDto> getAllImportTag() {
-        return tagMapper.entityListToImportDtoList(tagRepository.findAll());
+        return tagMapper.entityListToImportDtoList(tagRepository.findAll(tagSorting));
     }
 
     @Override

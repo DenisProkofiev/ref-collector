@@ -22,22 +22,22 @@ public abstract class TagMapper {
     @Autowired
     protected BaseOperationService operationService;
 
-    @Mapping(target = "objectCode", expression = "java(operationService.convertStringToUUID(tagDto.getObjectCode()))")
+   // @Mapping(target = "objectCode", expression = "java(operationService.convertStringToUUID(tagDto.getObjectCode()))")
     public abstract Tag toEntity(TagDto tagDto);
 
-    @Mapping(target = "objectCode", expression = "java(operationService.convertUUIDToString(tag.getObjectCode()))")
+//@Mapping(target = "objectCode", expression = "java(operationService.convertUUIDToString(tag.getObjectCode()))")
     public abstract TagDto toDto(Tag tag);
 
     public abstract List<TagDto> toDtoList(List<Tag> tagList);
 
     public abstract List<Tag> toEntityList(List<TagDto> tagDtoList);
 
-    @Mapping(target = "objectCode", expression = "java(operationService.convertUUIDToString(tag.getObjectCode()))")
+  //  @Mapping(target = "objectCode", expression = "java(operationService.convertUUIDToString(tag.getObjectCode()))")
     public abstract TagImportDto entityToImportDto(Tag tag);
 
     public abstract List<TagImportDto> entityListToImportDtoList(List<Tag> tagList);
 
-    @Mapping(target = "objectCode", expression = "java(operationService.convertStringToUUID(tagImportDto.getObjectCode()))")
+    //@Mapping(target = "objectCode", expression = "java(operationService.convertStringToUUID(tagImportDto.getObjectCode()))")
     public abstract Tag importDtoToEntity(TagImportDto tagImportDto);
 
     public abstract List<Tag> importDtoListToEntityList(List<TagImportDto> tagImportDtoList);

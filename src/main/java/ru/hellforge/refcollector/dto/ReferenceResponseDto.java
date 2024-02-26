@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * ReferenceResponseDto.
@@ -22,7 +23,7 @@ public class ReferenceResponseDto {
     @JsonProperty("id")
     private Long id;
     @JsonProperty("objectCode")
-    private String objectCode;
+    private UUID objectCode;
     @JsonProperty("name")
     private String name;
     @JsonProperty("url")

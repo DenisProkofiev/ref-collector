@@ -17,6 +17,7 @@ import java.util.List;
 
 import static java.lang.Boolean.TRUE;
 import static org.apache.logging.log4j.util.Strings.EMPTY;
+import static ru.hellforge.refcollector.util.BaseOperationService.collectionNotEmpty;
 
 @Service
 @RequiredArgsConstructor
@@ -60,14 +61,14 @@ public class DataServiceImpl implements DataService {
         List<EnvironmentImportDto> savedEnvironment = environmentService.importEnvironment(jsonData.getEnvironments());
         List<RelationImportDto> savedBaseRelation = baseRelationService.importRelation(jsonData.getRelations());
 
-//        if (!isEmpty(jsonData.getReferences()))
-//            savedReference = referenceService.importReference(jsonData.getReferences());
-//        if (!isEmpty(jsonData.getTags()))
-//            savedTags = tagService.importTag(jsonData.getTags());
-//        if (!isEmpty(jsonData.getEnvironments()))
-//            savedEnvironment = environmentService.importEnvironment(jsonData.getEnvironments());
-//        if (!isEmpty(jsonData.getRelations()))
-//            savedBaseRelation = baseRelationService.importRelation(jsonData.getRelations());
+        if (collectionNotEmpty(jsonData.getReferences()))
+            savedReference = referenceService.importReference(jsonData.getReferences());
+        if (collectionNotEmpty(jsonData.getTags()))
+            savedTags = tagService.importTag(jsonData.getTags());
+        if (collectionNotEmpty(jsonData.getEnvironments()))
+            savedEnvironment = environmentService.importEnvironment(jsonData.getEnvironments());
+        if (collectionNotEmpty(jsonData.getRelations()))
+            savedBaseRelation = baseRelationService.importRelation(jsonData.getRelations());
 
         return JsonDataDto.builder()
                 .references(savedReference)

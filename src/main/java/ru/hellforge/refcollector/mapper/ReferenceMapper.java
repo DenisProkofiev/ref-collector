@@ -23,22 +23,22 @@ public abstract class ReferenceMapper {
     @Autowired
     protected BaseOperationService operationService;
 
-    @Mapping(target = "objectCode", expression = "java(operationService.convertStringToUUID(referenceDto.getObjectCode()))")
+   // @Mapping(target = "objectCode", expression = "java(operationService.convertStringToUUID(referenceDto.getObjectCode()))")
     public abstract Reference fullDtoToEntity(ReferenceDto referenceDto);
 
-    @Mapping(target = "objectCode", expression = "java(operationService.convertUUIDToString(reference.getObjectCode()))")
+   // @Mapping(target = "objectCode", expression = "java(operationService.convertUUIDToString(reference.getObjectCode()))")
     public abstract ReferenceDto entityToFullDto(Reference reference);
 
     public abstract List<Reference> fullDtoListToEntityList(List<ReferenceDto> referenceDtoList);
 
     public abstract List<ReferenceDto> referenceListToFullDtoList(List<Reference> referenceList);
 
-    @Mapping(target = "objectCode", expression = "java(operationService.convertStringToUUID(referenceImportDto.getObjectCode()))")
+    //@Mapping(target = "objectCode", expression = "java(operationService.convertStringToUUID(referenceImportDto.getObjectCode()))")
     public abstract Reference importDtoToEntity(ReferenceImportDto referenceImportDto);
 
     public abstract List<Reference> importDtoListToEntityList(List<ReferenceImportDto> referenceDtoList);
 
-    @Mapping(target = "objectCode", expression = "java(operationService.convertUUIDToString(reference.getObjectCode()))")
+   // @Mapping(target = "objectCode", expression = "java(operationService.convertUUIDToString(reference.getObjectCode()))")
     public abstract ReferenceImportDto entityToImportDto(Reference reference);
 
     public abstract List<ReferenceImportDto> entityListToImportDtoList(List<Reference> referenceList);

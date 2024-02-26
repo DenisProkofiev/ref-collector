@@ -15,20 +15,17 @@ import static org.mapstruct.MappingConstants.ComponentModel.SPRING;
 
 @Mapper(componentModel = SPRING)
 public abstract class RelationMapper {
-    @Autowired
-    protected BaseOperationService operationService;
-
-    @Mapping(target = "objectCode", expression = "java(operationService.convertStringToUUID(relationDto.getObjectCode()))")
+   // @Mapping(target = "objectCode", expression = "java(operationService.convertStringToUUID(relationDto.getObjectCode()))")
     public abstract Relation toEntity(RelationDto relationDto);
 
-    @Mapping(target = "objectCode", expression = "java(operationService.convertUUIDToString(relation.getObjectCode()))")
+    //@Mapping(target = "objectCode", expression = "java(operationService.convertUUIDToString(relation.getObjectCode()))")
     public abstract RelationDto toDto(Relation relation);
 
     public abstract List<Relation> toEntityList(List<RelationDto> relationDtoList);
 
     public abstract List<RelationDto> toDtoList(List<Relation> relationList);
 
-    @Mapping(target = "objectCode", expression = "java(operationService.convertUUIDToString(relation.getObjectCode()))")
+    //@Mapping(target = "objectCode", expression = "java(operationService.convertUUIDToString(relation.getObjectCode()))")
     public abstract RelationImportDto entityToImportDto(Relation relation);
 
     public abstract List<RelationImportDto> entityListToImportDtoList(List<Relation> relations);

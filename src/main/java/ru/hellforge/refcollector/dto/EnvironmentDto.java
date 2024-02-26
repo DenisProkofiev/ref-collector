@@ -16,7 +16,7 @@ public class EnvironmentDto {
     @JsonProperty("id")
     private Long id;
     @JsonProperty("objectCode")
-    private String objectCode;
+    private UUID objectCode;
     @JsonProperty("name")
     private String name;
 }

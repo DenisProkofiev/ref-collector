@@ -123,8 +123,8 @@
         </td>
 
         <td>
-            <div class="btn-group" style="height: 35px; width: 35px">
-                <button id="copyUrlButton"
+            <div class="btn-group" style="height: 35px; width: 35px; horiz-align: center; align-items: center">
+                <button id="copy-url-button"
                         type="button"
                         class="btn btn-success"
                         style="background: #6babc7"
@@ -136,8 +136,7 @@
                         class="btn btn-success"
                         data-toggle="modal"
                         data-target="#referenceEditDialog"
-                        th:data-referenceId="${reference.id}"
-                        th:data-objectCode="${reference.objectCode}">
+                        th:data-referenceId="${reference.objectCode}">
                     <i class="fas fa-edit"></i>
                 </button>
                 <button id="delete-reference"
@@ -307,7 +306,7 @@
                 </form>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button id="delete-reference-button" data-id="${reference-id}" class="btn btn-primary" role="button"
+                    <button id="delete-reference-button" data-id="${reference-objectCode}" class="btn btn-primary" role="button"
                             style="background: crimson">Delete
                     </button>
                 </div>
@@ -495,15 +494,14 @@
 <!--Распологать после всех скриптов-->
 
 <script>
-    function copyUrl(element) {
-        console.error()
+    $('#copy-url-button').on('click', function () {
         let text = element.innerText;
         let input = document.createElement('input');
         input.setAttribute('value', text);
         document.body.appendChild(input);
         input.select();
         document.execCommand('copy');
-    }
+    });
 </script>
 
 <script>
@@ -512,7 +510,7 @@
         let referenceId = button.data('referenceid')
         if (referenceId) {
             $.get({
-                url: '/api/v1/reference/' + referenceId,
+                url: '/api/v1/reference/id/' + referenceId,
                 success: (data) => {
                     let modal = $(this)
                     modal.find('#reference-id').val(data.id)
@@ -531,7 +529,7 @@
         };
         let id = reference.id
         $.ajax({
-            url: '/api/v1/reference/delete/' + id,
+            url: '/api/v1/reference/delete/id/' + id,
             type: 'DELETE',
             success: function (response) {
                 location.reload()
@@ -580,7 +578,7 @@
         let referenceId = button.data('referenceid')
         if (referenceId) {
             $.get({
-                url: '/api/v1/reference/' + referenceId,
+                url: '/api/v1/reference/object-code/' + referenceId,
                 success: (data) => {
                     let modal = $(this)
                     modal.find('#reference-id').val(data.id)

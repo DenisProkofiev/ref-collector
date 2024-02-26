@@ -6,12 +6,14 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.UUID;
+
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class RelationImportDto {
-    private String objectCode;
+    private UUID objectCode;
     private Long referenceId;
     private Long tagId;
     private Long environmentId;

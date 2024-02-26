@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.Column;
+import java.util.UUID;
 
 @Data
 @Builder
@@ -13,10 +14,10 @@ import javax.persistence.Column;
 @AllArgsConstructor
 public class RelationDto {
     private Long id;
-    private String objectCode;
-    private String referenceObjectCode;
-    private String tagObjectCode;
-    private String environmentObjectCode;
+    private UUID objectCode;
+    private UUID referenceObjectCode;
+    private UUID tagObjectCode;
+    private UUID environmentObjectCode;
     private Long referenceId;
     private Long tagId;
     private Long environmentId;
