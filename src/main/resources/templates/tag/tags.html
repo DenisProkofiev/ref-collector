@@ -71,8 +71,17 @@
                         th:data-tagId="${tag.id}">
                     <i class="fas fa-edit"></i>
                 </button>
-                <a th:href="@{/tag/delete/{id}(id=${tag.id})}"
-                   class="btn btn-danger" role="button" style="background: crimson"><i class="far fa-trash-alt"></i></a>
+                <button id="delete-tag"
+                        style="background: crimson"
+                        type="button"
+                        class="btn btn-success"
+                        data-toggle="modal"
+                        data-target="#tagDeleteDialog"
+                        th:data-tagId="${tag.id}">
+                    <i class="far fa-trash-alt"></i>
+                </button>
+                <!--                <a th:href="@{/tag/delete/{id}(id=${tag.id})}"-->
+                <!--                   class="btn btn-danger" role="button" style="background: crimson"><i class="far fa-trash-alt"></i></a>-->
             </div>
         </td>
     </tr>
@@ -136,6 +145,32 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                 <button id="update-tag-button" type="button" class="btn btn-primary">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="tagDeleteDialog" tabindex="-1" role="dialog"
+     aria-labelledby="tagDeleteDialogLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="tagDeleteDialogLabel">Delete tag?</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <input type="hidden" id="tag-id">
+                </form>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button id="delete-tag-button" data-id="${tag-objectCode}" class="btn btn-primary"
+                            role="button"
+                            style="background: crimson">Delete
+                    </button>
+                </div>
             </div>
         </div>
     </div>
@@ -218,6 +253,44 @@
             contentType: "application/json; charset=utf-8",
             dataType: "json",
             success: () => {
+                location.reload()
+            },
+            error: (err) => {
+                alert(err);
+            }
+        })
+
+        modal.modal('hide');
+    });
+</script>
+
+<script>
+    $('#tagDeleteDialog').on('shown.bs.modal', function (event) {
+        let button = $(event.relatedTarget)
+        let tagId = button.data('tagid')
+        if (tagId) {
+            $.get({
+                url: '/api/v1/tag/' + tagId,
+                success: (data) => {
+                    let modal = $(this)
+                    modal.find('#tag-id').val(data.id)
+                },
+                error: (err) => {
+                    alert(err);
+                }
+            });
+        }
+    })
+    $('#delete-tag-button').click(function () {
+        let modal = $('#tagDeleteDialog')
+        let tag = {
+            id: modal.find('#tag-id').val()
+        };
+        let id = tag.id
+        $.ajax({
+            url: '/api/v1/tag/delete/id/' + id,
+            type: 'DELETE',
+            success: function (response) {
                 location.reload()
             },
             error: (err) => {

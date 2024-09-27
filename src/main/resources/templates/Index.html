@@ -307,7 +307,8 @@
                 </form>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button id="delete-reference-button" data-id="${reference-objectCode}" class="btn btn-primary" role="button"
+                    <button id="delete-reference-button" data-id="${reference-objectCode}" class="btn btn-primary"
+                            role="button"
                             style="background: crimson">Delete
                     </button>
                 </div>
@@ -328,14 +329,23 @@
             </div>
             <div class="modal-body">
                 <form>
-                    <div class="form-group">
-                        <label for="reference-tags" class="col-form-label">Tags</label>
-                        <select class="form-control selectpicker" th:field="*{tags}" id="reference-tags">
-                            <option value="">Nothing selected</option>
-                            <option th:each="tag : ${tags}"
-                                    th:value="${tag.id}" th:text="${tag.name}">
-                            </option>
-                        </select>
+                    <!--                    <div class="form-group">-->
+                    <!--                        <label for="reference-tags" class="col-form-label">Tags</label>-->
+                    <!--                        <select class="form-control selectpicker" th:field="*{tags}" id="reference-tags">-->
+                    <!--                            <option value="">Nothing selected</option>-->
+                    <!--                            <option th:each="tag : ${tags}"-->
+                    <!--                                    th:value="${tag.id}" th:text="${tag.name}">-->
+                    <!--                            </option>-->
+                    <!--                        </select>-->
+                    <!--                    </div>-->
+                    <div class="row">
+                        <div class="col-sm-6" th:each="tag : ${tags}">
+                            <div class="form-check">
+                                <span th:text="${tag.name}"/>
+                                <input type="checkbox" th:value="${tag.id}"
+                                       class="tag-checkbox-list"/>
+                            </div>
+                        </div>
                     </div>
                 </form>
             </div>
@@ -665,11 +675,34 @@
     });
 </script>
 
+<!--<script>-->
+<!--    $('#filter-reference-button').click(function () {-->
+<!--        let modal = $('#referenceFilterDialog')-->
+<!--        window.location.href = '/reference?tagsIdList=' + modal.find('#reference-tags').val();-->
+<!--    })-->
+<!--</script>-->
+
 <script>
     $('#filter-reference-button').click(function () {
         let modal = $('#referenceFilterDialog')
-        window.location.href = '/reference?tagsIdList=' + modal.find('#reference-tags').val();
-    })
+        let tagIdList = modal.find('#tag-checkbox-list').val();
+
+        $.ajax({
+            url: '/reference?tagIdList=' + tagIdList,
+            type: 'GET',
+            data: JSON.stringify(tagIdList),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: () => {
+                location.reload()
+            },
+            error: (err) => {
+                alert(err);
+            }
+        })
+
+        modal.modal('hide');
+    });
 </script>
 
 <script>
@@ -685,7 +718,6 @@
             relation: modal.find('#export-relation').is(':checked')
         };
 
-        console.error(exportProperties)
         $.ajax({
             url: '/api/v1/export',
             type: 'POST',

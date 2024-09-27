@@ -41,13 +41,13 @@ public class TagResource {
         return ResponseEntity.status(OK).body(updatedTag);
     }
 
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/delete/id/{id}")
     public ResponseEntity<Void> delete(@PathVariable(name = "id") Long id) {
         tagService.deleteById(id);
         return  ResponseEntity.status(NO_CONTENT).build();
     }
 
-    @DeleteMapping("/delete/{objectCode}")
+    @DeleteMapping("/delete/object-code/{objectCode}")
     public ResponseEntity<Void> delete(@PathVariable(name = "objectCode") UUID objectCode) {
         tagService.deleteByObjectCode(objectCode);
         return  ResponseEntity.status(NO_CONTENT).build();

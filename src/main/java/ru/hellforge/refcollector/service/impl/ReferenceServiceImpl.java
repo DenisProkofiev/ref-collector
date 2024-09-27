@@ -37,10 +37,10 @@ public class ReferenceServiceImpl implements ReferenceService {
 
     @Override
     public List<ReferenceDto> getAllReference(ReferenceFilterDto filter) {
-        List<Reference> referenceDtoList = (isNull(filter) || isNull(filter.getTagsIdList())) ?
+        List<Reference> referenceDtoList = (isNull(filter) || isNull(filter.getTagIdList())) ?
                 referenceRepository.findAll() :
                 referenceRepository.findAllById(
-                        relationService.getReferenceIdListByTagId(filter.getTagsIdList().get(0))
+                        relationService.getReferenceIdListByTagId(filter.getTagIdList().get(0))
                 );
 
         return referenceMapper.referenceListToFullDtoList(referenceDtoList);
@@ -56,7 +56,7 @@ public class ReferenceServiceImpl implements ReferenceService {
     @Override
     public ReferenceDto getReferenceByObjectCode(UUID objectCode) {
         Reference referenceFromBD = referenceRepository.findAll().stream()
-                .filter(r -> Objects.equals(objectCode.toString(), r.getObjectCode()))
+                .filter(r -> Objects.equals(objectCode, r.getObjectCode()))
                 .findFirst()
                 .orElseThrow(EntityNotFoundException::new);
         return referenceMapper.entityToFullDto(referenceFromBD);

@@ -18,6 +18,6 @@ import java.util.List;
 @AllArgsConstructor
 public class ReferenceFilterDto extends Filter {
     private Long environmentId;
-    private List<Long> tagsIdList;
+    private List<Long> tagIdList;
     private Boolean globalReferences;
 }

@@ -74,12 +74,7 @@ public class TagServiceImpl implements TagService {
                 .filter(new Predicate<Tag>() {
                     @Override
                     public boolean test(Tag tag) {
-                        String objectCodeTag = OBJECT_CODE_NOT_CREATED;
-
-                        if (nonNull(tag.getObjectCode()))
-                            objectCodeTag = tag.getObjectCode().toString();
-
-                        return tagObjectCodeList.contains(objectCodeTag);
+                        return tagObjectCodeList.contains(tag.getObjectCode());
                     }
                 })
                 .collect(toList());
