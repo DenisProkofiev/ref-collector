@@ -6,8 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
-import java.util.List;
+import java.util.UUID;
 
 /**
  * ReferenceDto.
@@ -19,6 +18,8 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ReferenceImportDto {
+  @JsonProperty("objectCode")
+  private UUID objectCode;
   @JsonProperty("name")
   private String name;
   @JsonProperty("url")

@@ -6,17 +6,22 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.UUID;
 
 @Data
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "base_relation")
-public class BaseRelation {
-    @Id
-    @Column(name = "id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+@Table(name = "relation")
+public class Relation extends BaseEntity{
+    @Column(name = "reference_object_code")
+    private String referenceObjectCode;
+
+    @Column(name = "tag_object_code")
+    private String tagObjectCode;
+
+    @Column(name = "environment_object_code")
+    private String environmentObjectCode;
 
     @Column(name = "reference_id")
     private Long referenceId;

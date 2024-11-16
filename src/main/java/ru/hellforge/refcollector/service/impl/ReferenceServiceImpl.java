@@ -10,12 +10,18 @@ import ru.hellforge.refcollector.mapper.ReferenceMapper;
 import ru.hellforge.refcollector.model.entity.Reference;
 import ru.hellforge.refcollector.repository.ReferenceRepository;
 import ru.hellforge.refcollector.service.ReferenceService;
-import ru.hellforge.refcollector.service.ReferenceTagRelationService;
+import ru.hellforge.refcollector.service.RelationService;
 
 import javax.persistence.EntityNotFoundException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.UUID;
 
 import static java.util.Objects.isNull;
+import static ru.hellforge.refcollector.enums.EntityType.REFERENCE;
+import static ru.hellforge.refcollector.enums.RelationType.REF_TAG;
+import static ru.hellforge.refcollector.util.BaseOperationService.notEqual;
 
 /**
  * ReferenceServiceImpl.
@@ -25,51 +31,71 @@ import static java.util.Objects.isNull;
 @Service
 @RequiredArgsConstructor
 public class ReferenceServiceImpl implements ReferenceService {
-
     private final ReferenceRepository referenceRepository;
     private final ReferenceMapper referenceMapper;
-    private final ReferenceTagRelationService referenceTagRelationService;
+    private final RelationService relationService;
 
     @Override
     public List<ReferenceDto> getAllReference(ReferenceFilterDto filter) {
-        List<Reference> referenceDtoList = (isNull(filter) || isNull(filter.getTagsIdList())) ?
+        List<Reference> referenceDtoList = (isNull(filter) || isNull(filter.getTagIdList())) ?
                 referenceRepository.findAll() :
-                referenceRepository.findAllById(referenceTagRelationService.getReferenceIdListByTagId(filter.getTagsIdList().get(0)));
+                referenceRepository.findAllById(
+                        relationService.getReferenceIdListByTagId(filter.getTagIdList().get(0))
+                );
 
-        return referenceMapper.toDtoList(referenceDtoList);
+        return referenceMapper.referenceListToFullDtoList(referenceDtoList);
     }
 
     @Override
     public ReferenceDto getReferenceById(Long referenceId) {
         Reference referenceFromBD = referenceRepository.findById(referenceId).orElseThrow(EntityNotFoundException::new);
 
-        return referenceMapper.toDto(referenceFromBD);
+        return referenceMapper.entityToFullDto(referenceFromBD);
     }
 
     @Override
-    public List<ReferenceDto> getReferenceById(List<Long> referenceIdList) {
+    public ReferenceDto getReferenceByObjectCode(UUID objectCode) {
+        Reference referenceFromBD = referenceRepository.findAll().stream()
+                .filter(r -> Objects.equals(objectCode, r.getObjectCode()))
+                .findFirst()
+                .orElseThrow(EntityNotFoundException::new);
+        return referenceMapper.entityToFullDto(referenceFromBD);
+    }
+
+    @Override
+    public List<ReferenceDto> getReferenceByIdList(List<Long> referenceIdList) {
         List<Reference> references = referenceRepository.findAllByIdIn(referenceIdList);
 
-        return referenceMapper.toDtoList(references);
+        return referenceMapper.referenceListToFullDtoList(references);
     }
 
     @Override
     @Transactional
     public ReferenceDto saveReference(ReferenceDto referenceDto) {
-        Reference reference = referenceMapper.toEntity(referenceDto);
-
-        referenceTagRelationService.addRelationFromReference(referenceDto);
-
+        Reference reference = referenceMapper.fullDtoToEntity(referenceDto);
         Reference savedReference = referenceRepository.save(reference);
 
-        return referenceMapper.toDto(savedReference);
+        return referenceMapper.entityToFullDto(savedReference);
+    }
+
+    @Override
+    public List<ReferenceImportDto> getAllImportReference() {
+        return referenceMapper.entityListToImportDtoList(referenceRepository.findAll());
     }
 
     @Override
     public List<ReferenceDto> saveReferenceList(List<ReferenceDto> referenceDtoList) {
-        List<Reference> references = referenceMapper.toEntityList(referenceDtoList);
+        List<Reference> references = referenceMapper.fullDtoListToEntityList(referenceDtoList);
 
-        return referenceMapper.toDtoList(referenceRepository.saveAll(references));
+        return referenceMapper.referenceListToFullDtoList(referenceRepository.saveAll(references));
+    }
+
+    @Override
+    public List<ReferenceImportDto> importReference(List<ReferenceImportDto> referenceImportDtoList) {
+        List<ReferenceImportDto> referenceImportToSave = compareImportReference(referenceImportDtoList);
+        List<Reference> savedList = referenceRepository.saveAll(referenceMapper.importDtoListToEntityList(referenceImportToSave));
+
+        return referenceMapper.entityListToImportDtoList(savedList);
     }
 
     @Override
@@ -77,8 +103,25 @@ public class ReferenceServiceImpl implements ReferenceService {
         referenceRepository.deleteById(id);
     }
 
-    public List<ReferenceImportDto> getNewRows() {
-        return null;
+    @Override
+    public void deleteByObjectCode(UUID objectCode) {
+        referenceRepository.deleteByObjectCode(objectCode.toString());
+        relationService.deleteByTypeAndObjectCode(REF_TAG, REFERENCE, objectCode);
+    }
+
+    private List<ReferenceImportDto> compareImportReference(List<ReferenceImportDto> referenceImportList) {
+        List<Reference> references = referenceRepository.findAll();
+        List<ReferenceImportDto> newReferences = new ArrayList<>();
+
+        for (ReferenceImportDto referenceImportDto : referenceImportList) {
+            for (Reference reference : references) {
+                if (notEqual(referenceImportDto.getUrl(), reference.getUrl())) {
+                    newReferences.add(referenceImportDto);
+                }
+            }
+        }
+
+        return newReferences;
     }
 
 }

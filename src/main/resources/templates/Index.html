@@ -2,7 +2,6 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <!--  <script type="text/javascript" src="static/reference-edit-modal-window.js" th:src="@{/reference-edit-modal-window.js}"></script>-->
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <!-- Bootstrap CSS -->
@@ -14,14 +13,14 @@
 </head>
 
 <body>
-<h1 style="background-image: url('reference-background.jpeg'); margin-top: 0px; margin-bottom: 0px">
+<h1 style="background-image: url('reference-background.jpeg'); margin-top: 0; margin-bottom: 0">
 
     <div class="btn-group">
         <select class="dropdown" th:field="*{environments}" id="environments"
                 style="text-align: center; vertical-align: middle; width: 400px; height: 40px;  font-size: 14px">
             <option value="null">Global environment</option>
             <option th:each="environment : ${environments}"
-                    th:value="${environment.id}" th:text="${environment.name}"
+                    th:value="${environment.id}" th:text="${environment.name}">
             </option>
         </select>
         <button id="create-environment"
@@ -38,7 +37,8 @@
         <button id="create-reference"
                 style="background: #86e0b3"
                 type="button"
-                class="btn btn-success" data-toggle="modal" data-target="#referenceCreateDialog">
+                class="btn btn-success" data-toggle="modal"
+                data-target="#referenceCreateDialog">
             <i class="fa fa-plus-square"></i>
         </button>
         <a style="background: #6babc7"
@@ -46,6 +46,22 @@
            class="btn btn-success">
             <i class="fa fa-tags"></i>
         </a>
+        <button id="export-data"
+                title="export"
+                style="background: #7ebe6c"
+                type="button"
+                class="btn btn-success" data-toggle="modal"
+                data-target="#exportDataDialog">
+            <i class="fa fa-file-export"></i>
+        </button>
+        <button id="import-data"
+                title="import"
+                style="background: #19acbe"
+                type="button"
+                class="btn btn-success" data-toggle="modal"
+                data-target="#importDataDialog">
+            <i class="fa fa-file-import"></i>
+        </button>
         <button id="filter-reference"
                 style="background: limegreen"
                 type="button"
@@ -76,13 +92,15 @@
     </tr>
     <tr th:each="reference : ${references}" style="margin-top: 0px; margin-bottom: 0px">
         <td style="font-size: 14px; text-align: center; vertical-align: middle">
-            <span th:text="${reference.id}"
+            <span id="reference-id"
+                  th:text="${reference.id}"
                   th:value="${reference.id}"></span>
         </td>
-        <td style="font-size: 14px; text-align: center; vertical-align: middle">
+        <td id="name"
+            style="font-size: 14px; text-align: center; vertical-align: middle">
             <span th:text="${reference.name}"></span>
         </td>
-        <td style="font-size: 12px; text-align: center; vertical-align: middle">
+        <td style="font-size: 12px; text-align: center; vertical-align: middle; width: 40%">
             <a id="urlId"
                th:value="${reference.url}"
                th:href="${reference.url}"
@@ -95,7 +113,7 @@
         </td>
         <td style="text-align: center; vertical-align: middle">
             <p th:each="tag : ${reference.tagList}"
-               th:value="${tag.name}"
+               th:value="${tag.objectCode}"
                th:text="${tag.name}"
                class="badge badge-secondary"
                style="font-size: 12px; text-align: center; vertical-align: middle;  margin-top: 0px; margin-bottom: 4px">
@@ -106,8 +124,8 @@
         </td>
 
         <td>
-            <div class="btn-group" style="height: 35px; width: 35px">
-                <button id="copyUrlButton"
+            <div class="btn-group" style="height: 35px; width: 35px; horiz-align: center; align-items: center">
+                <button id="copy-url-button"
                         type="button"
                         class="btn btn-success"
                         style="background: #6babc7"
@@ -119,7 +137,7 @@
                         class="btn btn-success"
                         data-toggle="modal"
                         data-target="#referenceEditDialog"
-                        th:data-referenceId="${reference.id}">
+                        th:data-referenceId="${reference.objectCode}">
                     <i class="fas fa-edit"></i>
                 </button>
                 <button id="delete-reference"
@@ -128,7 +146,7 @@
                         class="btn btn-success"
                         data-toggle="modal"
                         data-target="#referenceDeleteDialog"
-                        th:data-deleteId="${reference.id}">
+                        th:data-referenceId="${reference.id}">
                     <i class="far fa-trash-alt"></i>
                 </button>
             </div>
@@ -178,6 +196,7 @@
                 <form>
                     <input type="hidden" id="reference-id">
                     <input type="hidden" id="reference-createDate">
+                    <input type="hidden" id="reference-objectCode">
                     <div class="form-group">
                         <label for="reference-name" class="col-form-label">Reference name</label>
                         <input type="text" class="form-control" id="reference-name">
@@ -195,13 +214,13 @@
                         <select class="form-control selectpicker" th:field="*{tags}" id="reference-tags">
                             <option value="">Nothing selected</option>
                             <option th:each="tag : ${tags}"
-                                    th:value="${tag.id}" th:text="${tag.name}">
+                                    th:value="${tag.objectCode}" th:text="${tag.name}">
                             </option>
                         </select>
                     </div>
                     <div class="form-group">
                         <label for="environment-name" class="col-form-label">Environments</label>
-                        <select class="form-control selectpicker" th:field="*{environments}" id="environment">
+                        <select class="form-control selectpicker" th:field="*{environments}" id="edit-environment">
                             <option value="null">Global environment</option>
                             <option th:each="environment : ${environments}"
                                     th:value="${environment.id}" th:text="${environment.name}">
@@ -231,6 +250,7 @@
             <div class="modal-body">
                 <form>
                     <input type="hidden" id="reference-id">
+                    <input type="hidden" id="reference-objectCode">
                     <div class="form-group">
                         <label for="reference-name" class="col-form-label">Name</label>
                         <input type="text" class="form-control" id="reference-name">
@@ -248,7 +268,7 @@
                         <select class="form-control selectpicker" th:field="*{tags}" id="reference-tags">
                             <option value="null">Nothing selected</option>
                             <option th:each="tag : ${tags}"
-                                    th:value="${tag.id}" th:text="${tag.name}">
+                                    th:value="${tag.objectCode}" th:text="${tag.name}">
                             </option>
                         </select>
                     </div>
@@ -283,219 +303,456 @@
             </div>
             <div class="modal-body">
                 <form>
-                    <input type="hidden" id="deleteReferenceId">
+                    <input type="hidden" id="reference-id">
                 </form>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button id="delete-reference-button" class="btn btn-primary" role="button"
+                    <button id="delete-reference-button" data-id="${reference-objectCode}" class="btn btn-primary"
+                            role="button"
                             style="background: crimson">Delete
                     </button>
                 </div>
             </div>
         </div>
     </div>
+</div>
 
-    <div class="modal fade" id="referenceFilterDialog" tabindex="-1" role="dialog"
-         aria-labelledby="referenceFilterDialogLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="referenceFilterDialogLabel">Filter reference</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <form>
-                        <div class="form-group">
-                            <label for="reference-tags" class="col-form-label">Tags</label>
-                            <select class="form-control selectpicker" th:field="*{tags}" id="reference-tags">
-                                <option value="">Nothing selected</option>
-                                <option th:each="tag : ${tags}"
-                                        th:value="${tag.id}" th:text="${tag.name}">
-                                </option>
-                            </select>
+<div class="modal fade" id="referenceFilterDialog" tabindex="-1" role="dialog"
+     aria-labelledby="referenceFilterDialogLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="referenceFilterDialogLabel">Filter reference</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <!--                    <div class="form-group">-->
+                    <!--                        <label for="reference-tags" class="col-form-label">Tags</label>-->
+                    <!--                        <select class="form-control selectpicker" th:field="*{tags}" id="reference-tags">-->
+                    <!--                            <option value="">Nothing selected</option>-->
+                    <!--                            <option th:each="tag : ${tags}"-->
+                    <!--                                    th:value="${tag.id}" th:text="${tag.name}">-->
+                    <!--                            </option>-->
+                    <!--                        </select>-->
+                    <!--                    </div>-->
+                    <div class="row">
+                        <div class="col-sm-6" th:each="tag : ${tags}">
+                            <div class="form-check">
+                                <span th:text="${tag.name}"/>
+                                <input type="checkbox" th:value="${tag.id}"
+                                       class="tag-checkbox-list"/>
+                            </div>
                         </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button id="filter-reference-button" type="button" class="btn btn-primary">Filter</button>
-                </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button id="filter-reference-button" type="button" class="btn btn-primary">Filter</button>
             </div>
         </div>
     </div>
+</div>
 
-    <script src="https://code.jquery.com/jquery-3.3.1.min.js"
-            integrity="sha384-tsQFqpEReu7ZLhBV2VZlAu7zcOV+rXbYlF2cqB8txI/8aZajjp4Bqd+V6D5IgvKT"
-            crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
-            integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
-            crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
-            integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
-            crossorigin="anonymous"></script>
+<div class="modal fade" id="exportDataDialog" tabindex="-1" role="dialog"
+     aria-labelledby="exportDataDialogLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content" style="align-self: center; ">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exportDataDialogLabel">Export data</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="export-destination-text">Destination</span>
+                        </div>
+                        <input type="text" class="form-control" aria-label="Default"
+                               aria-describedby="export-destination-text"
+                               placeholder="C:\users\public\"
+                               value="C:\users\public\"
+                               id="export-destination">
+                    </div>
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="export-filename-text">Filename</span>
+                        </div>
+                        <input type="text" class="form-control" aria-label="Default"
+                               aria-describedby="export-filename-text"
+                               placeholder="export_db"
+                               value="export_db"
+                               id="export-filename">
+                    </div>
+                    <div class="form-group">
+                        <div class="custom-control custom-switch">
+                            <input type="checkbox"
+                                   class="custom-control-input"
+                                   id="append-date">
+                            <label class="custom-control-label" for="append-date">Append date</label>
+                        </div>
+                    </div>
+                    <label style="font-size: 18px">Select export attributes</label>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <fieldset>
+                                <div class="form-group">
+                                    <div class="custom-control custom-switch">
+                                        <input type="checkbox"
+                                               class="custom-control-input"
+                                               id="export-reference">
+                                        <label class="custom-control-label" for="export-reference">References</label>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="custom-control custom-switch">
+                                        <input type="checkbox"
+                                               class="custom-control-input"
+                                               id="export-tag"
+                                               value="false">
+                                        <label class="custom-control-label" for="export-tag">Tags</label>
+                                    </div>
+                                </div>
+                            </fieldset>
+                        </div>
+                        <div class="col-md-6">
+                            <fieldset>
+                                <div class="form-group">
+                                    <div>
+                                        <div class="custom-control custom-switch">
+                                            <input type="checkbox"
+                                                   class="custom-control-input"
+                                                   id="export-environment">
+                                            <label class="custom-control-label"
+                                                   for="export-environment">Environment</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div>
+                                        <div class="custom-control custom-switch">
+                                            <input type="checkbox"
+                                                   class="custom-control-input"
+                                                   id="export-relation">
+                                            <label class="custom-control-label" for="export-relation">Relation</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </fieldset>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button id="export-data-button" type="button" class="btn btn-primary">Export</button>
+            </div>
+        </div>
+    </div>
+</div>
 
-    <!--Распологать после всех скриптов-->
+<div class="modal fade" id="importDataDialog" tabindex="-1" role="dialog"
+     aria-labelledby="importDataDialogLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content" style="align-self: center; ">
+            <div class="modal-header">
+                <h5 class="modal-title" id="importDataDialogLabel">Import data</h5>
+                <!--                <button type="button" class="close" data-dismiss="modal" aria-label="Close">-->
+                <!--                    <span aria-hidden="true">&times;</span>-->
+                <!--                </button>-->
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="import-source-text">Source</span>
+                        </div>
+                        <div class="custom-file">
+                            <input type="file" class="custom-file-input" id="input-data-file"
+                                   name="content"
+                                   aria-describedby="import-source-text"
+                                   placeholder="Import file"
+                                   accept="application/json">
+                            <label class="custom-file-label" for="input-data-file">Choose file</label>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button id="import-data-button" type="button" class="btn btn-primary">Import</button>
+            </div>
+        </div>
+    </div>
+</div>
 
-    <script>
-        function copyUrl(element) {
-            console.error()
-            let text = element.innerText;
-            let input = document.createElement('input');
-            input.setAttribute('value', text);
-            document.body.appendChild(input);
-            input.select();
-            document.execCommand('copy');
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"
+        integrity="sha384-tsQFqpEReu7ZLhBV2VZlAu7zcOV+rXbYlF2cqB8txI/8aZajjp4Bqd+V6D5IgvKT"
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
+
+<!--Распологать после всех скриптов-->
+
+<script>
+    $('#copy-url-button').on('click', function () {
+        let text = element.innerText;
+        let input = document.createElement('input');
+        input.setAttribute('value', text);
+        document.body.appendChild(input);
+        input.select();
+        document.execCommand('copy');
+    });
+</script>
+
+<script>
+    $('#referenceDeleteDialog').on('shown.bs.modal', function (event) {
+        let button = $(event.relatedTarget)
+        let referenceId = button.data('referenceid')
+        if (referenceId) {
+            $.get({
+                url: '/api/v1/reference/id/' + referenceId,
+                success: (data) => {
+                    let modal = $(this)
+                    modal.find('#reference-id').val(data.id)
+                },
+                error: (err) => {
+                    alert(err);
+                }
+            });
         }
-    </script>
+    })
 
-    <script>
-        $('#save-environment-button').click(function () {
-            let modal = $('#environmentCreateDialog')
-            let environment = {
-                name: modal.find('#environment-name').val()
-            };
-
-            if (modal.find('#environment-id').val()) {
-                reference.id = modal.find('#environment-id').val()
-            }
-
-            $.ajax({
-                url: '/api/v1/environment',
-                type: 'POST',
-                data: JSON.stringify(environment),
-                contentType: "application/json; charset=utf-8",
-                dataType: "json",
-                success: () => {
-                    location.reload()
-                },
-                error: (err) => {
-                    alert(err);
-                }
-            })
-
-            modal.modal('hide');
-        });
-    </script>
-
-    <script>
-        $('#referenceEditDialog').on('shown.bs.modal', function (event) {
-            let button = $(event.relatedTarget)
-            let referenceId = button.data('referenceid')
-            if (referenceId) {
-                $.get({
-                    url: '/api/v1/reference/' + referenceId,
-                    success: (data) => {
-                        let modal = $(this)
-                        modal.find('#reference-id').val(data.id)
-                        modal.find('#reference-name').val(data.name)
-                        modal.find('#reference-url').val(data.url)
-                        modal.find('#reference-createDate').val(data.createDate)
-                        modal.find('#reference-description').val(data.description)
-                        modal.find('#reference-tags').val(data.tags)
-                    },
-                    error: (err) => {
-                        alert(err);
-                    }
-                });
+    $('#delete-reference-button').click(function () {
+        let modal = $('#referenceDeleteDialog')
+        let reference = {
+            id: modal.find('#reference-id').val()
+        };
+        let id = reference.id
+        $.ajax({
+            url: '/api/v1/reference/delete/id/' + id,
+            type: 'DELETE',
+            success: function (response) {
+                location.reload()
+            },
+            error: (err) => {
+                alert(err);
             }
         })
 
-        $('#update-reference-button').click(function () {
-            let modal = $('#referenceEditDialog')
-            let reference = {
-                name: modal.find('#reference-name').val(),
-                url: modal.find('#reference-url').val(),
-                createDate: modal.find('#reference-createDate').val(),
-                description: modal.find('#reference-description').val(),
-                tags: [
-                    modal.find('#reference-tags').val()
-                ],
-            };
-            if (modal.find('#reference-id').val()) {
-                reference.id = modal.find('#reference-id').val()
+        modal.modal('hide');
+    });
+</script>
+
+<script>
+    $('#save-environment-button').click(function () {
+        let modal = $('#environmentCreateDialog')
+        let environment = {
+            name: modal.find('#environment-name').val()
+        };
+
+        if (modal.find('#environment-id').val()) {
+            reference.id = modal.find('#environment-id').val()
+        }
+
+        $.ajax({
+            url: '/api/v1/environment',
+            type: 'POST',
+            data: JSON.stringify(environment),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: () => {
+                location.reload()
+            },
+            error: (err) => {
+                alert(err);
             }
-            let id = reference.id
-            $.ajax({
-                url: '/api/v1/reference/edit/' + id,
-                type: 'PUT',
-                data: JSON.stringify(reference),
-                contentType: "application/json; charset=utf-8",
-                dataType: "json",
-                success: () => {
-                    location.reload()
+        })
+
+        modal.modal('hide');
+    });
+</script>
+
+<script>
+    $('#referenceEditDialog').on('shown.bs.modal', function (event) {
+        let button = $(event.relatedTarget)
+        let referenceId = button.data('referenceid')
+        if (referenceId) {
+            $.get({
+                url: '/api/v1/reference/object-code/' + referenceId,
+                success: (data) => {
+                    let modal = $(this)
+                    modal.find('#reference-id').val(data.id)
+                    modal.find('#reference-name').val(data.name)
+                    modal.find('#reference-url').val(data.url)
+                    modal.find('#reference-createDate').val(data.createDate)
+                    modal.find('#reference-description').val(data.description)
+                    modal.find('#reference-tags').val(data.tags)
+                    modal.find('#reference-objectCode').val(data.objectCode)
                 },
                 error: (err) => {
                     alert(err);
                 }
-            })
+            });
+        }
+    })
 
-            modal.modal('hide');
-        });
-    </script>
-
-    <script>
-        $('#save-reference-button').click(function () {
-            let modal = $('#referenceCreateDialog')
-            let tags = [
+    $('#update-reference-button').click(function () {
+        let modal = $('#referenceEditDialog')
+        let reference = {
+            name: modal.find('#reference-name').val(),
+            url: modal.find('#reference-url').val(),
+            createDate: modal.find('#reference-createDate').val(),
+            description: modal.find('#reference-description').val(),
+            objectCode: modal.find('#reference-objectCode').val(),
+            tags: [
                 modal.find('#reference-tags').val()
-            ]
-            let reference = {
-                name: modal.find('#reference-name').val(),
-                url: modal.find('#reference-url').val(),
-                description: modal.find('#reference-description').val(),
-                tags: tags,
-            };
-
-            if (modal.find('#reference-id').val()) {
-                reference.id = modal.find('#reference-id').val()
+            ],
+        };
+        if (modal.find('#reference-id').val()) {
+            reference.id = modal.find('#reference-id').val()
+        }
+        let id = reference.id
+        $.ajax({
+            url: '/api/v1/reference/edit/' + id,
+            type: 'PUT',
+            data: JSON.stringify(reference),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: () => {
+                location.reload()
+            },
+            error: (err) => {
+                alert(err);
             }
-
-            $.ajax({
-                url: '/api/v1/reference',
-                type: 'POST',
-                data: JSON.stringify(reference),
-                contentType: "application/json; charset=utf-8",
-                dataType: "json",
-                success: () => {
-                    location.reload()
-                },
-                error: (err) => {
-                    alert(err);
-                }
-            })
-
-            modal.modal('hide');
-        });
-    </script>
-
-    <script>
-        $('#delete-reference-button').on('shown.bs.modal', function (event) {
-            let modal = $('#referenceDeleteDialog')
-            let id = modal.find('#deleteReferenceId').val()
-
-            $.ajax({
-                url: '/api/v1/reference/delete/' + id,
-                type: 'DELETE',
-                success: function (response) {
-
-                },
-                error: (err) => {
-                    alert(err);
-                }
-            })
-            modal.modal('hide');
-        });
-    </script>
-
-    <script>
-        $('#filter-reference-button').click(function () {
-            let modal = $('#referenceFilterDialog')
-            window.location.href = '/reference?tagsIdList=' + modal.find('#reference-tags').val();
         })
-    </script>
 
+        modal.modal('hide');
+    });
+</script>
+
+<script>
+    $('#save-reference-button').click(function () {
+        let modal = $('#referenceCreateDialog')
+        let tags = [
+            modal.find('#reference-tags').val()
+        ]
+        let reference = {
+            name: modal.find('#reference-name').val(),
+            url: modal.find('#reference-url').val(),
+            description: modal.find('#reference-description').val(),
+            tags: tags,
+        };
+        if (modal.find('#reference-id').val()) {
+            reference.id = modal.find('#reference-id').val()
+        }
+
+        $.ajax({
+            url: '/api/v1/reference',
+            type: 'POST',
+            data: JSON.stringify(reference),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: () => {
+                location.reload()
+            },
+            error: (err) => {
+                alert(err);
+            }
+        })
+
+        modal.modal('hide');
+    });
+</script>
+
+<!--<script>-->
+<!--    $('#filter-reference-button').click(function () {-->
+<!--        let modal = $('#referenceFilterDialog')-->
+<!--        window.location.href = '/reference?tagsIdList=' + modal.find('#reference-tags').val();-->
+<!--    })-->
+<!--</script>-->
+
+<script>
+    $('#filter-reference-button').click(function () {
+        let modal = $('#referenceFilterDialog')
+        let tagIdList = modal.find('#tag-checkbox-list').val();
+
+        $.ajax({
+            url: '/reference?tagIdList=' + tagIdList,
+            type: 'GET',
+            data: JSON.stringify(tagIdList),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: () => {
+                location.reload()
+            },
+            error: (err) => {
+                alert(err);
+            }
+        })
+
+        modal.modal('hide');
+    });
+</script>
+
+<script>
+    $('#export-data-button').click(function () {
+        let modal = $('#exportDataDialog')
+        let exportProperties = {
+            destination: modal.find('#export-destination').val(),
+            fileName: modal.find('#export-filename').val(),
+            appendDate: modal.find('#append-date').is(':checked'),
+            reference: modal.find('#export-reference').is(':checked'),
+            tag: modal.find('#export-tag').is(':checked'),
+            environment: modal.find('#export-environment').is(':checked'),
+            relation: modal.find('#export-relation').is(':checked')
+        };
+
+        $.ajax({
+            url: '/api/v1/export',
+            type: 'POST',
+            data: JSON.stringify(exportProperties),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: () => {
+                location.reload()
+            },
+            error: (err) => {
+                alert(err);
+            }
+        })
+
+        modal.modal('hide');
+    });
+</script>
+<script>
+    $('#import-data-button').click(function (data) {
+        $.ajax({
+            url: '/api/v1/import',
+            type: 'POST',
+            data: JSON.stringify(data),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: () => {
+                location.reload()
+            },
+            error: (err) => {
+                alert(err);
+            }
+        })
+        modal.modal('hide');
+    });
+</script>
 
 </body>
 </html>

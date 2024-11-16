@@ -8,6 +8,8 @@ import ru.hellforge.refcollector.model.entity.Reference;
 
 import java.sql.SQLData;
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 /**
  * ReferenceRepository.
@@ -15,6 +17,10 @@ import java.util.List;
  * @author dprokofev
  */
 @Repository
-public interface ReferenceRepository extends JpaRepository<Reference, Long>, JpaSpecificationExecutor<Reference> {
+public interface ReferenceRepository extends JpaRepository<Reference, Long> {
     List<Reference> findAllByIdIn(List<Long> idList);
+
+    void deleteByObjectCode(String uuid);
+
+    Optional<Reference> findByObjectCode(String uuid);
 }

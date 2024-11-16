@@ -17,7 +17,6 @@ import static org.mapstruct.MappingConstants.ComponentModel.SPRING;
  */
 @Mapper(componentModel = SPRING)
 public interface ReferenceResponseMapper {
-
-   @Mapping(source = "tagDtoList", target = "tagList")
+    @Mapping(source = "tagDtoList", target = "tagList")
     ReferenceResponseDto toDto(ReferenceDto referenceDto, List<TagDto> tagDtoList);
 }
